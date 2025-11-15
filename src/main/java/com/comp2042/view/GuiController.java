@@ -4,8 +4,8 @@ import com.comp2042.events.EventSource;
 import com.comp2042.events.EventType;
 import com.comp2042.events.InputEventListener;
 import com.comp2042.events.MoveEvent;
-import com.comp2042.model.DownData;
-import com.comp2042.model.ViewData;
+import com.comp2042.Logic.DownData;
+import com.comp2042.Logic.ViewData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.BooleanProperty;
@@ -24,6 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -38,6 +40,12 @@ public class GuiController implements Initializable {
 
     @FXML
     private Group groupNotification;
+
+    @FXML
+    private ToggleButton pauseButton;
+
+    @FXML
+    private Text scoreValue;
 
     @FXML
     private GridPane brickPanel;
@@ -85,6 +93,9 @@ public class GuiController implements Initializable {
                 }
                 if (keyEvent.getCode() == KeyCode.N) {
                     newGame(null);
+                }
+                if (keyEvent.getCode() == KeyCode.P) {
+                    pauseButton.selectedProperty().setValue(!pauseButton.selectedProperty().getValue());
                 }
             }
         });
@@ -207,6 +218,14 @@ public class GuiController implements Initializable {
     }
 
     public void bindScore(IntegerProperty integerProperty) {
+        // Ensure the Text node is present before binding and style it explicitly
+        if (scoreValue != null) {
+
+            scoreValue.setFill(Color.RED); // bright red
+            scoreValue.setStyle("-fx-font-weight: bold; -fx-font-size: 20px;");
+            // Bind the text to the integer property; Format can be adjusted if needed
+            scoreValue.textProperty().bind(integerProperty.asString());
+        }
     }
 
     public void gameOver() {

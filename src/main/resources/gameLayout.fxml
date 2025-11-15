@@ -8,6 +8,12 @@
 <?import java.net.URL?>
 <Pane fx:controller="com.comp2042.view.GuiController"
       xmlns:fx="http://javafx.com/fxml">
+    <!-- Score display on right side -->
+    <VBox layoutX="650" layoutY="50" spacing="10" alignment="CENTER">
+        <Text text="SCORE" fill="yellow" style="-fx-font-size: 30px; -fx-font-weight: bold;" />
+        <Text fx:id="scoreValue" fill="red" style="-fx-font-size: 24px; -fx-font-weight: bold;" textAlignment="CENTER" />
+    </VBox>
+
     <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
     <BorderPane styleClass="gameBoard" fx:id="gameBoard">
         <center>

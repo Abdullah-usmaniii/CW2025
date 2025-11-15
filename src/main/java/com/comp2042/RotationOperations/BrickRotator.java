@@ -1,7 +1,6 @@
-package com.comp2042.CoreGame;
+package com.comp2042.RotationOperations;
 
-import com.comp2042.model.NextShapeInfo;
-import com.comp2042.logic.bricks.Brick;
+import com.comp2042.bricks.Brick;
 
 public class BrickRotator {
 

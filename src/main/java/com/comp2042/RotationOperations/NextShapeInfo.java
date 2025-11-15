@@ -1,6 +1,6 @@
-package com.comp2042.model;
+package com.comp2042.RotationOperations;
 
-import com.comp2042.utilities.MatrixOperations;
+import com.comp2042.Logic.MatrixOperations;
 
 public final class NextShapeInfo {
 

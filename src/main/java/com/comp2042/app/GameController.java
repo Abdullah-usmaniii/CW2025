@@ -1,11 +1,13 @@
-package com.comp2042.CoreGame;
+package com.comp2042.app;
 
+import com.comp2042.Logic.Board;
+import com.comp2042.Logic.ClearRow;
+import com.comp2042.Logic.DownData;
+import com.comp2042.Logic.SimpleBoard;
 import com.comp2042.events.EventSource;
 import com.comp2042.events.InputEventListener;
 import com.comp2042.events.MoveEvent;
-import com.comp2042.model.ClearRow;
-import com.comp2042.model.DownData;
-import com.comp2042.model.ViewData;
+import com.comp2042.Logic.ViewData;
 import com.comp2042.view.GuiController;
 
 public class GameController implements InputEventListener {
@@ -19,7 +21,12 @@ public class GameController implements InputEventListener {
         board.createNewBrick();
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
-        viewGuiController.bindScore(board.getScore().scoreProperty());
+        // bindScore moved to Main so the UI wiring happens there
+    }
+
+    // Expose score so callers (e.g. Main) can bind it to the view
+    public com.comp2042.Logic.Score getScore() {
+        return board.getScore();
     }
 
     @Override
