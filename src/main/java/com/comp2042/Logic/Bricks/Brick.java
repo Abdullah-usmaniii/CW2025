@@ -1,4 +1,4 @@
-package com.comp2042.bricks;
+package com.comp2042.Logic.Bricks;
 
 import java.util.List;
 
