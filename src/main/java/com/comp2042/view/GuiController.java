@@ -48,6 +48,9 @@ public class GuiController implements Initializable {
     private Text scoreValue;
 
     @FXML
+    private Text highScoreValue;
+
+    @FXML
     private GridPane brickPanel;
 
     @FXML
@@ -225,6 +228,15 @@ public class GuiController implements Initializable {
             scoreValue.setStyle("-fx-font-weight: bold; -fx-font-size: 20px;");
             // Bind the text to the integer property; Format can be adjusted if needed
             scoreValue.textProperty().bind(integerProperty.asString());
+        }
+    }
+
+    public void bindHighScore(IntegerProperty highScoreProperty) {
+        // Bind high score display
+        if (highScoreValue != null) {
+            highScoreValue.setFill(Color.RED); // red color as requested
+            highScoreValue.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
+            highScoreValue.textProperty().bind(highScoreProperty.asString());
         }
     }
 

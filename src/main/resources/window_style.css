@@ -70,3 +70,10 @@
     -fx-fill: yellow;
     -fx-text-fill: yellow;
 }
+
+.HighScoreClass{
+    -fx-font-family: "Let's go Digital";
+    -fx-font-size: 38;
+    -fx-fill: Red;
+    -fx-text-fill: Red;
+}

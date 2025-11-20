@@ -29,13 +29,15 @@ public class Main extends Application {
         GuiController c = fxmlLoader.getController();
 
         primaryStage.setTitle("TetrisJFX");
-        Scene scene = new Scene(root, 350, 510);
+        Scene scene = new Scene(root, 500,510);
         primaryStage.setScene(scene);
         primaryStage.show();
 
         GameController gameController = new GameController(c);
         // bind the score from the game controller to the GUI
         c.bindScore(gameController.getScore().scoreProperty());
+        // bind the high score from the game controller to the GUI
+        c.bindHighScore(gameController.getScore().highScoreProperty());
     }
 
 
