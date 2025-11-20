@@ -24,7 +24,7 @@
             <Text text="Text" fx:id="scoreValue" styleClass="scoreClass"/>
         </VBox>
         <VBox alignment="CENTER" style="-fx-spacing: 5;">
-            <Label text="High Score:" styleClass="HighScoreClass"/>
+            <Label text="High Score:" styleClass="HighScoreClass" textFill="red"/>
             <Text text="0" fx:id="highScoreValue" fill="red" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
         </VBox>
         <VBox alignment="CENTER">
@@ -38,6 +38,14 @@
         <VBox alignment="CENTER" style="-fx-spacing: 10;">
             <ToggleButton fx:id="pauseButton" text="Pause" onAction="#pauseGame" styleClass="button"/>
             <Button text="New Game" onAction="#newGame" styleClass="button"/>
+        <Button text="New Game" onAction="#newGame" styleClass="ipad-dark-grey" prefWidth="140"/>
+        <ToggleButton text="Pause" styleClass="ipad-dark-grey" onAction="#pauseGame" prefWidth="140"
+                      fx:id="pauseButton"/>
+        <VBox fx:id="helpBox">
+
+
+
+
         </VBox>
     </VBox>
     <Group fx:id="groupNotification" layoutX="14" layoutY="203">

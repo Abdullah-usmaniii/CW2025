@@ -63,10 +63,14 @@ public class GuiController implements Initializable {
 
     private Rectangle[][] nextBrickMatrix;
 
+    private GridPane nextBrick;
+
     @FXML
     private GameOverPanel gameOverPanel;
 
     private Rectangle[][] displayMatrix;
+
+    private Rectangle[][] nextBrickMatrix;
 
     private InputEventListener eventListener;
 
