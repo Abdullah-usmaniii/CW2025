@@ -8,6 +8,9 @@
 <?import java.net.URL?>
 <Pane fx:controller="com.comp2042.view.GuiController"
       xmlns:fx="http://javafx.com/fxml">
+
+    <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
+
     <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
     <BorderPane styleClass="gameBoard" fx:id="gameBoard">
         <center>
@@ -23,6 +26,18 @@
         <VBox alignment="CENTER" style="-fx-spacing: 5;">
             <Label text="High Score:" styleClass="HighScoreClass"/>
             <Text text="0" fx:id="highScoreValue" fill="red" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+        </VBox>
+        <VBox alignment="CENTER">
+            <Label text="Next brick" styleClass="nextBrickLabel"/>
+            <BorderPane styleClass="nextBrick" prefWidth="100" prefHeight="70" maxWidth="100">
+                <center>
+                    <GridPane fx:id="nextBrick" alignment="CENTER" hgap="1" vgap="1"/>
+                </center>
+            </BorderPane>
+        </VBox>
+        <VBox alignment="CENTER" style="-fx-spacing: 10;">
+            <ToggleButton fx:id="pauseButton" text="Pause" onAction="#pauseGame" styleClass="button"/>
+            <Button text="New Game" onAction="#newGame" styleClass="button"/>
         </VBox>
     </VBox>
     <Group fx:id="groupNotification" layoutX="14" layoutY="203">

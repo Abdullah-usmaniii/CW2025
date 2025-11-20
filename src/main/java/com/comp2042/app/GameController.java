@@ -21,6 +21,8 @@ public class GameController implements InputEventListener {
         board.createNewBrick();
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
+        // Initialize next brick display
+        viewGuiController.initNextBrick(board.getViewData().getNextBrickData());
         // bindScore moved to Main so the UI wiring happens there
     }
 
@@ -41,6 +43,9 @@ public class GameController implements InputEventListener {
             }
             if (board.createNewBrick()) {
                 viewGuiController.gameOver();
+            } else {
+                // Refresh next brick display when a new brick is created
+                viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
             }
 
             viewGuiController.refreshGameBackground(board.getBoardMatrix());
@@ -72,5 +77,7 @@ public class GameController implements InputEventListener {
     public void createNewGame() {
         board.newGame();
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
+        // Refresh next brick display for new game
+        viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
     }
 }
