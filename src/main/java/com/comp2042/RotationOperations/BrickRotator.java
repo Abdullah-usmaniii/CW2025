@@ -1,6 +1,6 @@
 package com.comp2042.RotationOperations;
 
-import com.comp2042.Logic.Bricks.Brick;
+import com.comp2042.Logic.bricks.Brick;
 
 public class BrickRotator {
 
