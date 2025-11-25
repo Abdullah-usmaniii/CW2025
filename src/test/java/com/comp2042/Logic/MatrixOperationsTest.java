@@ -106,34 +106,62 @@ class MatrixOperationsTest {
         assertEquals(0, merged[0][0]);
     }
 
-    // --- Tests for checkRemoving() ---
+    //  Tests for checkRemoving()
 
     @Test
     void testCheckRemoving_NoRowsToClear() {
-        ClearRow result = MatrixOperations.checkRemoving(boardWithBlocks);
+        // Create a board with no completely filled rows
+        int[][] partialBoard = new int[10][10];
+        // Fill bottom row partially (leaving one cell empty)
+        for (int i = 0; i < 9; i++) {
+            partialBoard[9][i] = 1;
+        }
+        // partialBoard[9][9] remains 0 (empty)
+
+        ClearRow result = MatrixOperations.checkRemoving(partialBoard);
         assertEquals(0, result.getLinesRemoved(),
-                "Should remove 0 lines when none are full.");
+                "Should remove 0 lines when no row is completely full.");
         assertEquals(0, result.getScoreBonus(),
                 "Score bonus should be 0 for 0 lines.");
     }
 
     @Test
     void testCheckRemoving_OneRowToClear() {
-        // Fill row 8 completely
+        // Fill row 8 completely (row 9 is already filled in boardWithBlocks)
         for (int i = 0; i < 10; i++) {
             boardWithBlocks[8][i] = 2; // Use a different number for clarity
         }
 
         ClearRow result = MatrixOperations.checkRemoving(boardWithBlocks);
 
+        assertEquals(2, result.getLinesRemoved(), "Should remove exactly two lines (rows 8 and 9).");
+        assertEquals(200, result.getScoreBonus(), "Score bonus should be 200 for 2 lines (50 * 2 * 2).");
+
+        int[][] newMatrix = result.getNewMatrix();
+        // Check that the top two rows are now empty
+        assertArrayEquals(new int[10], newMatrix[0], "The new top row should be empty.");
+        assertArrayEquals(new int[10], newMatrix[1], "The second row should be empty.");
+    }
+
+    @Test
+    void testCheckRemoving_ExactlyOneRowToClear() {
+        // Create a fresh board with only one completely filled row
+        int[][] singleRowBoard = new int[10][10];
+        // Fill only the bottom row
+        for (int i = 0; i < 10; i++) {
+            singleRowBoard[9][i] = 1;
+        }
+
+        ClearRow result = MatrixOperations.checkRemoving(singleRowBoard);
+
         assertEquals(1, result.getLinesRemoved(), "Should remove exactly one line.");
         assertEquals(50, result.getScoreBonus(), "Score bonus should be 50 for 1 line.");
 
         int[][] newMatrix = result.getNewMatrix();
-        // Check that the top row (row 0) is now empty
+        // Check that the top row is now empty (rows shifted up)
         assertArrayEquals(new int[10], newMatrix[0], "The new top row should be empty.");
-        // Check that the previously filled row (now row 9) has shifted down
-        assertArrayEquals(boardWithBlocks[9], newMatrix[9], "The bottom row should still be intact.");
+        // Check that the bottom row is now empty (cleared row was removed)
+        assertArrayEquals(new int[10], newMatrix[9], "The bottom row should now be empty.");
     }
 
     @Test

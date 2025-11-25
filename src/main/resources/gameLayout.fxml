@@ -6,54 +6,76 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<Pane fx:controller="com.comp2042.view.GuiController"
-      xmlns:fx="http://javafx.com/fxml">
 
-    <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
+<StackPane fx:controller="com.comp2042.view.GuiController"
+           xmlns:fx="http://javafx.com/fxml"
+           styleClass="root">
 
-    <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
-    <BorderPane styleClass="gameBoard" fx:id="gameBoard">
-        <center>
-            <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutY="30" layoutX="40"/>
-        </center>
-    </BorderPane>
+    <!-- Main container pane for all game elements -->
+    <Pane prefWidth="800" prefHeight="600">
 
-    <VBox layoutX="260" layoutY="20" alignment="CENTER" styleClass="vbox">
-        <VBox alignment="CENTER">
-            <Label text="Score:" styleClass="scoreClass"/>
-            <Text text="Text" fx:id="scoreValue" styleClass="scoreClass"/>
-        </VBox>
-        <VBox alignment="CENTER" style="-fx-spacing: 5;">
-            <Label text="High Score:" styleClass="HighScoreClass" textFill="red"/>
-            <Text text="0" fx:id="highScoreValue" fill="red" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
-        </VBox>
-        <VBox alignment="CENTER">
-            <Label text="Next brick" styleClass="nextBrickLabel"/>
-            <BorderPane styleClass="nextBrick" prefWidth="100" prefHeight="70" maxWidth="100">
+        <!-- Game area pane - Adjust layoutX and layoutY to move the entire game board -->
+        <!-- layoutX: horizontal position (increase to move right, decrease to move left) -->
+        <!-- layoutY: vertical position (increase to move down, decrease to move up) -->
+        <Pane layoutX="600" layoutY="150" prefWidth="350" prefHeight="550">
+            <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
+            <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
+            <BorderPane styleClass="gameBoard" fx:id="gameBoard">
+                <center>
+                    <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutY="50" layoutX="40"/>
+                </center>
+            </BorderPane>
+
+            <Group fx:id="groupNotification" layoutX="14" layoutY="203">
+                <VBox alignment="CENTER">
+                    <GameOverPanel fx:id="gameOverPanel"/>
+                </VBox>
+            </Group>
+        </Pane>
+
+        <!-- Score display pane - Adjust layoutX and layoutY to reposition score -->
+        <!-- layoutX: horizontal position from left edge -->
+        <!-- layoutY: vertical position from top edge -->
+        <Pane layoutX="270" layoutY="70" prefWidth="120" prefHeight="80">
+            <Label text="SCORE" styleClass="scoreClass" layoutX="600" layoutY="80"/>
+            <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="150"/>
+        </Pane>
+
+        <!-- High Score display pane - Adjust layoutX and layoutY to reposition high score -->
+        <!-- layoutX: horizontal position from left edge -->
+        <!-- layoutY: vertical position from top edge -->
+
+        <Pane layoutX="270" layoutY="170" prefWidth="140" prefHeight="80">
+            <Label text="HIGH SCORE" styleClass="HighScoreClass" textFill="red" layoutX="600" layoutY="80"/>
+            <Text text="0" fx:id="highScoreValue" fill="red" style="-fx-font-weight: bold; -fx-font-size: 18px;" layoutX="673" layoutY="150"/>
+        </Pane>
+
+        <!-- Next brick preview pane - Adjust layoutX and layoutY to reposition next brick display -->
+        <!-- layoutX: horizontal position from left edge -->
+        <!-- layoutY: vertical position from top edge -->
+       <Pane layoutX="460" layoutY="200" prefWidth="120" prefHeight="120">
+            <Label text="Next brick" styleClass="nextBrickLabel" layoutX="15" layoutY="5"/>
+            <BorderPane styleClass="nextBrick" prefWidth="100" prefHeight="70" maxWidth="100" layoutX="10" layoutY="25">
                 <center>
                     <GridPane fx:id="nextBrick" alignment="CENTER" hgap="1" vgap="1"/>
                 </center>
             </BorderPane>
-        </VBox>
-        <VBox alignment="CENTER" style="-fx-spacing: 10;">
-            <ToggleButton fx:id="pauseButton" text="Pause" onAction="#pauseGame" styleClass="button"/>
-            <Button text="New Game" onAction="#newGame" styleClass="button"/>
-        <Button text="New Game" onAction="#newGame" styleClass="ipad-dark-grey" prefWidth="140"/>
-        <ToggleButton text="Pause" styleClass="ipad-dark-grey" onAction="#pauseGame" prefWidth="140"
-                      fx:id="pauseButton"/>
-        <VBox fx:id="helpBox">
+        </Pane>
 
 
+        <!-- Interactive buttons pane - Adjust layoutX and layoutY to reposition buttons -->
+        <!-- layoutX: horizontal position from left edge -->
+        <!-- layoutY: vertical position from top edge -->
+       <Pane layoutX="850" layoutY="500" prefWidth="150" prefHeight="120">
+            <Button text="New Game" onAction="#newGame" styleClass="ipad-dark-grey" prefWidth="140" layoutX="5" layoutY="10"/>
+            <ToggleButton text="Pause" styleClass="ipad-dark-grey" onAction="#pauseGame" prefWidth="140"
+                          fx:id="pauseButton" layoutX="5" layoutY="80"/>
+        </Pane>
 
 
-        </VBox>
-    </VBox>
-    <Group fx:id="groupNotification" layoutX="14" layoutY="203">
-        <VBox alignment="CENTER">
-            <GameOverPanel fx:id="gameOverPanel"/>
-        </VBox>
-    </Group>
+    </Pane>
+
     <stylesheets>
         <URL value="@window_style.css"/>
     </stylesheets>
-</Pane>
+</StackPane>
