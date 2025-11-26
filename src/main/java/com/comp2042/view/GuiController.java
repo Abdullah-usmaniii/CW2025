@@ -26,9 +26,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.scene.effect.DropShadow;
 
 import java.io.IOException;
 import java.net.URL;
@@ -294,13 +296,31 @@ public class GuiController implements Initializable {
 
                     Rectangle ghostRect = ghostRectangles[i][j];
                     int val = brick.getBrickData()[i][j];
+
                     if (val == 0) {
                         ghostRect.setFill(Color.TRANSPARENT);
+                        ghostRect.setStroke(Color.TRANSPARENT);
+                        ghostRect.setEffect(null);
                     } else {
                         Color c = (Color) getFillColor(val);
+                        // 1. Fill: Translucent like original logic
                         ghostRect.setFill(new Color(c.getRed(), c.getGreen(), c.getBlue(), 0.3));
+
+                        // 2. Stroke: Neon Edge
+                        ghostRect.setStroke(c);
+                        ghostRect.setStrokeWidth(2);
+                        // FIX: Forces the stroke to stay INSIDE the 20x20 box so it doesn't overlap neighbors
+                        ghostRect.setStrokeType(StrokeType.INSIDE);
+
                         ghostRect.setArcHeight(9);
                         ghostRect.setArcWidth(9);
+
+                        // 3. Effect: Neon Glow
+                        DropShadow glow = new DropShadow();
+                        glow.setColor(c);
+                        glow.setRadius(10);
+                        glow.setSpread(0.6);
+                        ghostRect.setEffect(glow);
                     }
                 }
             }
