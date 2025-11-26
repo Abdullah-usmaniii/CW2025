@@ -82,3 +82,9 @@
     -fx-fill: Red;
     -fx-text-fill: Red;
 }
+
+.holdBrick {
+    -fx-border-width: 4px;
+    -fx-border-color: #00BFFF; /* Deep sky blue color */
+    -fx-border-radius: 9px;
+}

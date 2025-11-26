@@ -34,6 +34,16 @@
             <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="150"/>
         </Pane>
 
+
+    <Pane layoutX="450" layoutY="200" prefWidth="120" prefHeight="120">
+        <Label text="HOLD (TAB)" styleClass="nextBrickLabel" layoutX="20" layoutY="5"/>
+        <BorderPane styleClass="holdBrick" prefWidth="100" prefHeight="70" maxWidth="100" layoutX="15" layoutY="25">
+            <center>
+                <GridPane fx:id="holdBrick" alignment="CENTER" hgap="2" vgap="1"/>
+            </center>
+        </BorderPane>
+    </Pane>
+
         <Pane layoutX="853" layoutY="272" prefWidth="120" prefHeight="120">
             <Label text="Next brick" styleClass="nextBrickLabel" layoutX="23" layoutY="5"/>
             <BorderPane styleClass="nextBrick" prefWidth="100" prefHeight="70" maxWidth="100" layoutX="15" layoutY="25">

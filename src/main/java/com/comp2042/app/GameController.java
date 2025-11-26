@@ -73,6 +73,18 @@ public class GameController implements InputEventListener {
     }
 
     @Override
+    public ViewData onHoldEvent(MoveEvent event) { // New method
+        if (board.holdBrick()) {
+            // If the hold/swap was successful, update the display.
+            ViewData viewData = board.getViewData();
+            viewGuiController.refreshNextBrick(viewData.getNextBrickData());
+            viewGuiController.refreshHoldBrick(viewData.getHeldBrickData());
+            return viewData;
+        }
+        return board.getViewData(); // Return current view data if hold failed
+    }
+
+    @Override
     public DownData onHardDropEvent(MoveEvent event){
         while(board.moveBrickDown()){
             // Keep moving down
@@ -99,5 +111,6 @@ public class GameController implements InputEventListener {
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
         // Refresh next brick display for new game
         viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
+        viewGuiController.refreshHoldBrick(board.getViewData().getHeldBrickData());
     }
 }

@@ -17,6 +17,8 @@ public class SimpleBoard implements Board {
     private int[][] currentGameMatrix;
     private Point currentOffset;
     private final Score score;
+    private Brick heldBrick = null;
+    private boolean canHold = true; // Prevents holding multiple times per piece
 
     public SimpleBoard(int width, int height) {
         this.width = width;
@@ -88,17 +90,58 @@ public class SimpleBoard implements Board {
         Brick currentBrick = brickGenerator.getBrick();
         brickRotator.setBrick(currentBrick);
         currentOffset = new Point(4, 1); // The bug responsible for spawning bricks in the middle of the board
+        canHold = true; // Reset hold ability for new brick
         return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
     }
 
     @Override
+    public boolean holdBrick() {
+        if (!canHold) {
+            return false; // Cannot hold if flag is false
+        }
+
+        canHold = false;
+        Brick currentBrick = brickRotator.getBrick();
+
+        if (heldBrick == null) {
+            // Case 1: Hold is empty. Store current and spawn new brick.
+            heldBrick = currentBrick;
+            createNewBrick();
+        } else {
+            // Case 2: Hold has a brick. Swap and reset current piece state.
+            Brick temp = heldBrick;
+            heldBrick = currentBrick;
+
+            // Swap the held brick to be the current one
+            brickRotator.setBrick(temp);
+            currentOffset = new Point(4, 1); // Reset position
+        }
+        return true;
+    }
+
+    @Override
     public int[][] getBoardMatrix() {
+
         return currentGameMatrix;
     }
 
     @Override
     public ViewData getViewData() {
-        return new ViewData(brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY(), brickGenerator.getNextBrick().getShapeMatrix().get(0), getGhostY());
+        int[][] heldData;
+        if(heldBrick != null){
+            heldData = heldBrick.getShapeMatrix().get(0);
+        } else{
+            // Return an empty 4x4 matrix if nothing is held, matching brick dimensions
+            heldData = new int[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+        }
+
+        return new ViewData(brickRotator.getCurrentShape(),
+                (int) currentOffset.getX(),
+                (int) currentOffset.getY(),
+                brickGenerator.getNextBrick().getShapeMatrix().get(0),
+                getGhostY(),
+                heldData
+        );
     }
 
     private int getGhostY() {
@@ -136,6 +179,8 @@ public class SimpleBoard implements Board {
     public void newGame() {
         currentGameMatrix = new int[width][height];
         score.reset();
+        heldBrick = null; // Clear held brick on new game
+        canHold = true; // Reset hold flag
         createNewBrick();
     }
 

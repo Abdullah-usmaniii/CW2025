@@ -44,6 +44,11 @@ public class GuiController implements Initializable {
     private StackPane rootPane;
 
     @FXML
+    private GridPane holdBrick;
+
+    private Rectangle[][] holdBrickMatrix;
+
+    @FXML
     private GridPane gamePanel;
 
     @FXML
@@ -120,6 +125,11 @@ public class GuiController implements Initializable {
                         hardDrop(new MoveEvent(EventType.HARD_DROP, EventSource.USER));
                         keyEvent.consume();
                     }
+                    if (keyEvent.getCode() == KeyCode.TAB) {
+                        refreshBrick(eventListener.onHoldEvent(new MoveEvent(EventType.HOLD, EventSource.USER)));
+                        keyEvent.consume();
+                    }
+
                 }
             }
         });
@@ -228,6 +238,9 @@ public class GuiController implements Initializable {
         ghostPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * ghostPanel.getVgap() + brick.getxPosition() * BRICK_SIZE);
         ghostPanel.setLayoutY(-42 + gamePanel.getLayoutY() + brick.getGhostYPosition() * ghostPanel.getHgap() + brick.getGhostYPosition() * BRICK_SIZE);
 
+        initNextBrick(brick.getNextBrickData());
+        initHoldBrick(brick.getHeldBrickData());
+
         timeLine = new Timeline(new KeyFrame(
                 Duration.millis(400),
                 ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
@@ -252,6 +265,23 @@ public class GuiController implements Initializable {
         }
     }
 
+
+    public void initHoldBrick(int[][] holdBrickData) {
+        holdBrick.getChildren().clear();
+        holdBrickMatrix = new Rectangle[holdBrickData.length][holdBrickData[0].length];
+
+        for (int i = 0; i < holdBrickData.length; i++) {
+            for (int j = 0; j < holdBrickData[i].length; j++) {
+                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
+                rectangle.setFill(getFillColor(holdBrickData[i][j]));
+                rectangle.setArcHeight(9);
+                rectangle.setArcWidth(9);
+                holdBrickMatrix[i][j] = rectangle;
+                holdBrick.add(rectangle, j, i);
+            }
+        }
+    }
+
     public void refreshNextBrick(int[][] nextBrickData) {
         if (nextBrickMatrix != null && nextBrickData.length == nextBrickMatrix.length
                 && nextBrickData[0].length == nextBrickMatrix[0].length) {
@@ -262,6 +292,18 @@ public class GuiController implements Initializable {
             }
         } else {
             initNextBrick(nextBrickData);
+        }
+    }
+    public void refreshHoldBrick(int[][] holdBrickData) {
+        if (holdBrickMatrix != null && holdBrickData.length == holdBrickMatrix.length
+                && holdBrickData[0].length == holdBrickMatrix[0].length) {
+            for (int i = 0; i < holdBrickData.length; i++) {
+                for (int j = 0; j < holdBrickData[i].length; j++) {
+                    holdBrickMatrix[i][j].setFill(getFillColor(holdBrickData[i][j]));
+                }
+            }
+        } else {
+            initHoldBrick(holdBrickData);
         }
     }
 

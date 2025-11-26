@@ -14,16 +14,22 @@ public class BrickRotator {
     }
 
     public int[][] getCurrentShape() {
+
         return brick.getShapeMatrix().get(currentShape);
     }
 
     public void setCurrentShape(int currentShape) {
+
         this.currentShape = currentShape;
     }
 
     public void setBrick(Brick brick) {
         this.brick = brick;
         currentShape = 0;
+    }
+
+    public Brick getBrick(){
+        return this.brick;
     }
 
 
