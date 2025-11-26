@@ -1,22 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import com.comp2042.view.GameOverPanel?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
 
-<StackPane fx:controller="com.comp2042.view.GuiController"
+<StackPane fx:id="rootPane" fx:controller="com.comp2042.view.GuiController"
            xmlns:fx="http://javafx.com/fxml"
            styleClass="root">
 
-    <!-- Main container pane for all game elements -->
     <Pane prefWidth="800" prefHeight="600">
 
-        <!-- Game area pane - Adjust layoutX and layoutY to move the entire game board -->
-        <!-- layoutX: horizontal position (increase to move right, decrease to move left) -->
-        <!-- layoutY: vertical position (increase to move down, decrease to move up) -->
         <Pane layoutX="600" layoutY="150" prefWidth="350" prefHeight="550">
             <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
             <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
@@ -33,27 +29,12 @@
             </Group>
         </Pane>
 
-        <!-- Score display pane - Adjust layoutX and layoutY to reposition score -->
-        <!-- layoutX: horizontal position from left edge -->
-        <!-- layoutY: vertical position from top edge -->
         <Pane layoutX="270" layoutY="70" prefWidth="120" prefHeight="80">
             <Label text="SCORE" styleClass="scoreClass" layoutX="600" layoutY="80"/>
             <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="150"/>
         </Pane>
 
-        <!-- High Score display pane - Adjust layoutX and layoutY to reposition high score -->
-        <!-- layoutX: horizontal position from left edge -->
-        <!-- layoutY: vertical position from top edge -->
-
-        <Pane layoutX="270" layoutY="170" prefWidth="140" prefHeight="80">
-            <Label text="HIGH SCORE" styleClass="HighScoreClass" textFill="red" layoutX="600" layoutY="80"/>
-            <Text text="0" fx:id="highScoreValue" fill="red" style="-fx-font-weight: bold; -fx-font-size: 18px;" layoutX="673" layoutY="150"/>
-        </Pane>
-
-        <!-- Next brick preview pane - Adjust layoutX and layoutY to reposition next brick display -->
-        <!-- layoutX: horizontal position from left edge -->
-        <!-- layoutY: vertical position from top edge -->
-       <Pane layoutX="460" layoutY="200" prefWidth="120" prefHeight="120">
+        <Pane layoutX="460" layoutY="200" prefWidth="120" prefHeight="120">
             <Label text="Next brick" styleClass="nextBrickLabel" layoutX="15" layoutY="5"/>
             <BorderPane styleClass="nextBrick" prefWidth="100" prefHeight="70" maxWidth="100" layoutX="10" layoutY="25">
                 <center>
@@ -61,17 +42,6 @@
                 </center>
             </BorderPane>
         </Pane>
-
-
-        <!-- Interactive buttons pane - Adjust layoutX and layoutY to reposition buttons -->
-        <!-- layoutX: horizontal position from left edge -->
-        <!-- layoutY: vertical position from top edge -->
-       <Pane layoutX="850" layoutY="500" prefWidth="150" prefHeight="120">
-            <Button text="New Game" onAction="#newGame" styleClass="ipad-dark-grey" prefWidth="140" layoutX="5" layoutY="10"/>
-            <ToggleButton text="Pause" styleClass="ipad-dark-grey" onAction="#pauseGame" prefWidth="140"
-                          fx:id="pauseButton" layoutX="5" layoutY="80"/>
-        </Pane>
-
 
     </Pane>
 
