@@ -26,8 +26,8 @@ public class GameController implements InputEventListener {
         // bindScore moved to Main so the UI wiring happens there
     }
 
-    // Expose score so callers (e.g. Main) can bind it to the view
     public com.comp2042.Logic.Score getScore() {
+
         return board.getScore();
     }
 
@@ -72,6 +72,26 @@ public class GameController implements InputEventListener {
         return board.getViewData();
     }
 
+    @Override
+    public DownData onHardDropEvent(MoveEvent event){
+        while(board.moveBrickDown()){
+            // Keep moving down
+        }
+
+        board.mergeBrickToBackground();
+        ClearRow clearRow = board.clearRows();
+        if (clearRow.getLinesRemoved() > 0){
+            board.getScore().add(clearRow.getScoreBonus());
+        }
+        if (board.createNewBrick()){
+            viewGuiController.gameOver();
+        } else {
+            viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
+        }
+        viewGuiController.refreshGameBackground(board.getBoardMatrix());
+
+        return new DownData(clearRow, board.getViewData());
+    }
 
     @Override
     public void createNewGame() {

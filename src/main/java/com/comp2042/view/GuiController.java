@@ -116,6 +116,10 @@ public class GuiController implements Initializable {
                         moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
                         keyEvent.consume();
                     }
+                    if (keyEvent.getCode() == KeyCode.SPACE) {
+                        hardDrop(new MoveEvent(EventType.HARD_DROP, EventSource.USER));
+                        keyEvent.consume();
+                    }
                 }
             }
         });
@@ -151,10 +155,6 @@ public class GuiController implements Initializable {
             if (rootPane != null) {
                 rootPane.getChildren().add(currentOverlay);
 
-                // --- FIX STARTS HERE ---
-                // We request focus on the overlay and add a listener to IT.
-                // This ensures that even if buttons inside capture focus, the ESC event
-                // will bubble up to this overlay and trigger closePreview().
                 currentOverlay.requestFocus();
                 currentOverlay.setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ESCAPE) {
@@ -162,7 +162,6 @@ public class GuiController implements Initializable {
                         event.consume();
                     }
                 });
-                // --- FIX ENDS HERE ---
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -309,7 +308,6 @@ public class GuiController implements Initializable {
                         // 2. Stroke: Neon Edge
                         ghostRect.setStroke(c);
                         ghostRect.setStrokeWidth(2);
-                        // FIX: Forces the stroke to stay INSIDE the 20x20 box so it doesn't overlap neighbors
                         ghostRect.setStrokeType(StrokeType.INSIDE);
 
                         ghostRect.setArcHeight(9);
@@ -344,6 +342,19 @@ public class GuiController implements Initializable {
     private void moveDown(MoveEvent event) {
         if (isPause.getValue() == Boolean.FALSE) {
             DownData downData = eventListener.onDownEvent(event);
+            if (downData.getClearRow() != null && downData.getClearRow().getLinesRemoved() > 0) {
+                NotificationPanel notificationPanel = new NotificationPanel("+" + downData.getClearRow().getScoreBonus());
+                groupNotification.getChildren().add(notificationPanel);
+                notificationPanel.showScore(groupNotification.getChildren());
+            }
+            refreshBrick(downData.getViewData());
+        }
+        gamePanel.requestFocus();
+    }
+
+    private void hardDrop(MoveEvent event){
+        if (isPause.getValue() == Boolean.FALSE) {
+            DownData downData = eventListener.onHardDropEvent(event);
             if (downData.getClearRow() != null && downData.getClearRow().getLinesRemoved() > 0) {
                 NotificationPanel notificationPanel = new NotificationPanel("+" + downData.getClearRow().getScoreBonus());
                 groupNotification.getChildren().add(notificationPanel);

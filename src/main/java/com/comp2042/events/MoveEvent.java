@@ -10,10 +10,12 @@ public final class MoveEvent {
     }
 
     public EventType getEventType() {
+
         return eventType;
     }
 
     public EventSource getEventSource() {
+
         return eventSource;
     }
 }
