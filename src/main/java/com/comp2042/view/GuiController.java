@@ -11,23 +11,26 @@ import javafx.animation.Timeline;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.event.ActionEvent;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.effect.Reflection;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -36,19 +39,18 @@ public class GuiController implements Initializable {
     private static final int BRICK_SIZE = 20;
 
     @FXML
+    private StackPane rootPane;
+
+    @FXML
     private GridPane gamePanel;
 
     @FXML
     private Group groupNotification;
 
     @FXML
-    private ToggleButton pauseButton;
-
-    @FXML
     private Text scoreValue;
 
-    @FXML
-    private Text highScoreValue;
+    private final IntegerProperty highScore = new SimpleIntegerProperty();
 
     @FXML
     private GridPane brickPanel;
@@ -60,32 +62,41 @@ public class GuiController implements Initializable {
     private GridPane nextBrick;
 
     private Rectangle[][] ghostRectangles;
-
     private Rectangle[][] nextBrickMatrix;
 
     @FXML
     private GameOverPanel gameOverPanel;
 
     private Rectangle[][] displayMatrix;
-
     private InputEventListener eventListener;
-
     private Rectangle[][] rectangles;
-
     private Timeline timeLine;
 
     private final BooleanProperty isPause = new SimpleBooleanProperty();
-
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
+
+    // Track the currently open preview overlay
+    private Parent currentOverlay;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
         gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
+
+        // Key Handler for the Main Game
         gamePanel.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
+                // ESC Key: Open Preview if not already open
+                if (keyEvent.getCode() == KeyCode.ESCAPE) {
+                    if (currentOverlay == null) {
+                        showPreview();
+                    }
+                    keyEvent.consume();
+                    return;
+                }
+
                 if (isPause.getValue() == Boolean.FALSE && isGameOver.getValue() == Boolean.FALSE) {
                     if (keyEvent.getCode() == KeyCode.LEFT || keyEvent.getCode() == KeyCode.A) {
                         refreshBrick(eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER)));
@@ -104,29 +115,16 @@ public class GuiController implements Initializable {
                         keyEvent.consume();
                     }
                 }
-                if (keyEvent.getCode() == KeyCode.N) {
-                    newGame(null);
-                }
-                if (keyEvent.getCode() == KeyCode.P) {
-                    pauseButton.selectedProperty().setValue(!pauseButton.selectedProperty().getValue());
-                }
             }
         });
         gameOverPanel.setVisible(false);
 
-        // Add listener to pause button to sync with isPause property and update button text
-        pauseButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            isPause.setValue(newVal);
+        // Pause state listener
+        isPause.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                pauseButton.setText("Resume");
-                if (timeLine != null) {
-                    timeLine.pause();
-                }
+                if (timeLine != null) timeLine.pause();
             } else {
-                pauseButton.setText("Pause");
-                if (timeLine != null && !isGameOver.getValue()) {
-                    timeLine.play();
-                }
+                if (timeLine != null && !isGameOver.getValue()) timeLine.play();
             }
         });
 
@@ -134,6 +132,66 @@ public class GuiController implements Initializable {
         reflection.setFraction(0.8);
         reflection.setTopOpacity(0.9);
         reflection.setTopOffset(-12);
+    }
+
+    public void showPreview() {
+        if (currentOverlay != null) return;
+
+        isPause.set(true);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PreviewLayout.fxml"));
+            currentOverlay = loader.load();
+
+            GamePreview previewController = loader.getController();
+            previewController.setGuiController(this);
+
+            if (rootPane != null) {
+                rootPane.getChildren().add(currentOverlay);
+
+                // --- FIX STARTS HERE ---
+                // We request focus on the overlay and add a listener to IT.
+                // This ensures that even if buttons inside capture focus, the ESC event
+                // will bubble up to this overlay and trigger closePreview().
+                currentOverlay.requestFocus();
+                currentOverlay.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ESCAPE) {
+                        closePreview();
+                        event.consume();
+                    }
+                });
+                // --- FIX ENDS HERE ---
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closePreview() {
+        if (rootPane != null && currentOverlay != null) {
+            rootPane.getChildren().remove(currentOverlay);
+            currentOverlay = null;
+        }
+        // Unpause game
+        isPause.set(false);
+        // Important: Return focus to the game panel so controls work again
+        gamePanel.requestFocus();
+    }
+
+    public void newGame() {
+        timeLine.stop();
+        gameOverPanel.setVisible(false);
+        eventListener.createNewGame();
+        gamePanel.requestFocus();
+
+        isPause.setValue(Boolean.FALSE);
+        isGameOver.setValue(Boolean.FALSE);
+
+        timeLine.play();
+    }
+
+    public String getHighScoreText() {
+        return Integer.toString(highScore.get());
     }
 
     public void initGameView(int[][] boardMatrix, ViewData brick) {
@@ -157,7 +215,6 @@ public class GuiController implements Initializable {
                 rectangles[i][j] = rectangle;
                 brickPanel.add(rectangle, j, i);
 
-                // Initialize ghost rectangle
                 Rectangle ghostRect = new Rectangle(BRICK_SIZE, BRICK_SIZE);
                 ghostRect.setFill(Color.TRANSPARENT);
                 ghostRectangles[i][j] = ghostRect;
@@ -179,10 +236,7 @@ public class GuiController implements Initializable {
     }
 
     public void initNextBrick(int[][] nextBrickData) {
-        // Clear existing next brick display
         nextBrick.getChildren().clear();
-
-        // Initialize the next brick matrix with appropriate size
         nextBrickMatrix = new Rectangle[nextBrickData.length][nextBrickData[0].length];
 
         for (int i = 0; i < nextBrickData.length; i++) {
@@ -198,15 +252,14 @@ public class GuiController implements Initializable {
     }
 
     public void refreshNextBrick(int[][] nextBrickData) {
-        if (nextBrickMatrix != null && nextBrickData.length == nextBrickMatrix.length 
-            && nextBrickData[0].length == nextBrickMatrix[0].length) {
+        if (nextBrickMatrix != null && nextBrickData.length == nextBrickMatrix.length
+                && nextBrickData[0].length == nextBrickMatrix[0].length) {
             for (int i = 0; i < nextBrickData.length; i++) {
                 for (int j = 0; j < nextBrickData[i].length; j++) {
                     nextBrickMatrix[i][j].setFill(getFillColor(nextBrickData[i][j]));
                 }
             }
         } else {
-            // If dimensions don't match, reinitialize
             initNextBrick(nextBrickData);
         }
     }
@@ -214,37 +267,18 @@ public class GuiController implements Initializable {
     private Paint getFillColor(int i) {
         Paint returnPaint;
         switch (i) {
-            case 0:
-                returnPaint = Color.TRANSPARENT;
-                break;
-            case 1:
-                returnPaint = Color.AQUA;
-                break;
-            case 2:
-                returnPaint = Color.BLUEVIOLET;
-                break;
-            case 3:
-                returnPaint = Color.DARKGREEN;
-                break;
-            case 4:
-                returnPaint = Color.YELLOW;
-                break;
-            case 5:
-                returnPaint = Color.RED;
-                break;
-            case 6:
-                returnPaint = Color.BEIGE;
-                break;
-            case 7:
-                returnPaint = Color.BURLYWOOD;
-                break;
-            default:
-                returnPaint = Color.WHITE;
-                break;
+            case 0: returnPaint = Color.TRANSPARENT; break;
+            case 1: returnPaint = Color.AQUA; break;
+            case 2: returnPaint = Color.BLUEVIOLET; break;
+            case 3: returnPaint = Color.DARKGREEN; break;
+            case 4: returnPaint = Color.YELLOW; break;
+            case 5: returnPaint = Color.RED; break;
+            case 6: returnPaint = Color.BEIGE; break;
+            case 7: returnPaint = Color.BURLYWOOD; break;
+            default: returnPaint = Color.WHITE; break;
         }
         return returnPaint;
     }
-
 
     private void refreshBrick(ViewData brick) {
         if (isPause.getValue() == Boolean.FALSE) {
@@ -258,7 +292,6 @@ public class GuiController implements Initializable {
                 for (int j = 0; j < brick.getBrickData()[i].length; j++) {
                     setRectangleData(brick.getBrickData()[i][j], rectangles[i][j]);
 
-                    // Update ghost rectangles
                     Rectangle ghostRect = ghostRectangles[i][j];
                     int val = brick.getBrickData()[i][j];
                     if (val == 0) {
@@ -306,50 +339,20 @@ public class GuiController implements Initializable {
     }
 
     public void bindScore(IntegerProperty integerProperty) {
-        // Ensure the Text node is present before binding and style it explicitly
         if (scoreValue != null) {
-
-            scoreValue.setFill(Color.RED); // bright red
+            scoreValue.setFill(Color.RED);
             scoreValue.setStyle("-fx-font-weight: bold; -fx-font-size: 20px;");
-            // Bind the text to the integer property; Format can be adjusted if needed
             scoreValue.textProperty().bind(integerProperty.asString());
         }
     }
 
     public void bindHighScore(IntegerProperty highScoreProperty) {
-        // Bind high score display
-        if (highScoreValue != null) {
-            highScoreValue.setFill(Color.RED); // red color as requested
-            highScoreValue.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
-            highScoreValue.textProperty().bind(highScoreProperty.asString());
-        }
+        this.highScore.bind(highScoreProperty);
     }
 
     public void gameOver() {
         timeLine.stop();
         gameOverPanel.setVisible(true);
         isGameOver.setValue(Boolean.TRUE);
-    }
-
-    public void newGame(ActionEvent actionEvent) {
-        timeLine.stop();
-        gameOverPanel.setVisible(false);
-        eventListener.createNewGame();
-        gamePanel.requestFocus();
-
-        // Reset pause state and button
-        isPause.setValue(Boolean.FALSE);
-        pauseButton.setSelected(false);
-        pauseButton.setText("Pause");
-        isGameOver.setValue(Boolean.FALSE);
-
-        timeLine.play();
-    }
-
-    public void pauseGame(ActionEvent actionEvent) {
-        // The actual pause/resume logic is handled by the listener on pauseButton.selectedProperty()
-        // This method is called when the button is clicked, and the selected state change
-        // will trigger the listener which handles the timeline control
-        gamePanel.requestFocus();
     }
 }
