@@ -379,7 +379,7 @@ public class GuiController implements Initializable {
                         ghostRect.setStroke(Color.TRANSPARENT);
                     } else {
                         setRectangleData(val, ghostRect);
-                        ghostRect.setOpacity(0.78);
+                        ghostRect.setOpacity(0.6);
                         ghostRect.setEffect(null);
                         ghostRect.setStroke(Color.TRANSPARENT);
                     }
