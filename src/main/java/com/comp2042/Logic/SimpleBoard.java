@@ -114,7 +114,7 @@ public class SimpleBoard implements Board {
 
             // Swap the held brick to be the current one
             brickRotator.setBrick(temp);
-            currentOffset = new Point(4, 1); // Reset position
+
         }
         return true;
     }

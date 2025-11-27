@@ -8,6 +8,12 @@ import com.comp2042.Logic.DownData;
 import com.comp2042.Logic.ViewData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.ParallelTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -134,6 +140,16 @@ public class GuiController implements Initializable {
             }
         });
         gameOverPanel.setVisible(false);
+
+        gameOverPanel.setNewGameAction(e -> {
+            newGame();
+            gameOverPanel.setVisible(false);
+        });
+
+        gameOverPanel.setExitAction(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
 
         // Pause state listener
         isPause.addListener((obs, oldVal, newVal) -> {
@@ -425,7 +441,27 @@ public class GuiController implements Initializable {
 
     public void gameOver() {
         timeLine.stop();
+
+        // 1. Make visible and prepare for animation
         gameOverPanel.setVisible(true);
+        gameOverPanel.setOpacity(0);
+        gameOverPanel.setTranslateY(30); // Start slightly below final position
+
+        // 2. Fade In
+        FadeTransition ft = new FadeTransition(Duration.millis(500), gameOverPanel);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+
+        // 3. Slide Up (Pop up)
+        TranslateTransition tt = new TranslateTransition(Duration.millis(500), gameOverPanel);
+        tt.setFromY(30);
+        tt.setToY(0);
+
+        // 4. Play Together
+        ParallelTransition pt = new ParallelTransition(ft, tt);
+        pt.play();
+
         isGameOver.setValue(Boolean.TRUE);
     }
+
 }
