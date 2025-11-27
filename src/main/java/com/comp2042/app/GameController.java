@@ -26,8 +26,8 @@ public class GameController implements InputEventListener {
         // bindScore moved to Main so the UI wiring happens there
     }
 
-    // Expose score so callers (e.g. Main) can bind it to the view
     public com.comp2042.Logic.Score getScore() {
+
         return board.getScore();
     }
 
@@ -72,6 +72,38 @@ public class GameController implements InputEventListener {
         return board.getViewData();
     }
 
+    @Override
+    public ViewData onHoldEvent(MoveEvent event) { // New method
+        if (board.holdBrick()) {
+            // If the hold/swap was successful, update the display.
+            ViewData viewData = board.getViewData();
+            viewGuiController.refreshNextBrick(viewData.getNextBrickData());
+            viewGuiController.refreshHoldBrick(viewData.getHeldBrickData());
+            return viewData;
+        }
+        return board.getViewData(); // Return current view data if hold failed
+    }
+
+    @Override
+    public DownData onHardDropEvent(MoveEvent event){
+        while(board.moveBrickDown()){
+            // Keep moving down
+        }
+
+        board.mergeBrickToBackground();
+        ClearRow clearRow = board.clearRows();
+        if (clearRow.getLinesRemoved() > 0){
+            board.getScore().add(clearRow.getScoreBonus());
+        }
+        if (board.createNewBrick()){
+            viewGuiController.gameOver();
+        } else {
+            viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
+        }
+        viewGuiController.refreshGameBackground(board.getBoardMatrix());
+
+        return new DownData(clearRow, board.getViewData());
+    }
 
     @Override
     public void createNewGame() {
@@ -79,5 +111,6 @@ public class GameController implements InputEventListener {
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
         // Refresh next brick display for new game
         viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
+        viewGuiController.refreshHoldBrick(board.getViewData().getHeldBrickData());
     }
 }

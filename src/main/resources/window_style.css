@@ -12,7 +12,7 @@
 }
 
 .gameBoard {
-    -fx-border-color: linear-gradient(#9600D4, #FFFFFF);
+    -fx-border-color: white;
     -fx-border-width: 12px;
     -fx-border-radius: 12px;
 }
@@ -64,7 +64,7 @@
 
 .gameOverStyle {
     -fx-font-family: "Let's go Digital";
-    -fx-font-size: 48;
+    -fx-font-size: 40;
     -fx-background-color: red;
 }
 
@@ -81,4 +81,48 @@
     -fx-font-size: 38;
     -fx-fill: Red;
     -fx-text-fill: Red;
+}
+
+.holdBrick {
+    -fx-border-width: 4px;
+    -fx-border-color: #00BFFF;
+    -fx-border-radius: 9px;
+}
+
+.greenButton {
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #45a049);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 8 15 8 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 4.5);
+}
+
+.greenButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #45a049, #4CAF50);
+}
+
+.redButton {
+    -fx-background-color: linear-gradient(to bottom, #f44336, #d32f2f);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 8 15 8 15;
+    -fx-effect: drop shadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 4.5);
+}
+
+.redButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #d32f2f, #f44336);
+}
+
+.game-grid-cell {
+    -fx-fill: rgba(161, 161, 161, 0.15);
+    -fx-stroke: transparent;
+    -fx-stroke-width: 0;
 }

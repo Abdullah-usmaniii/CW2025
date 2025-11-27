@@ -14,13 +14,14 @@
     <Pane prefWidth="800" prefHeight="600">
 
         <Pane layoutX="600" layoutY="150" prefWidth="350" prefHeight="550">
-            <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
-            <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
             <BorderPane styleClass="gameBoard" fx:id="gameBoard">
                 <center>
                     <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutY="50" layoutX="40"/>
                 </center>
             </BorderPane>
+
+            <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
+            <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
 
             <Group fx:id="groupNotification" layoutX="14" layoutY="203">
                 <VBox alignment="CENTER">
@@ -33,6 +34,16 @@
             <Label text="SCORE" styleClass="scoreClass" layoutX="600" layoutY="80"/>
             <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="150"/>
         </Pane>
+
+
+    <Pane layoutX="450" layoutY="200" prefWidth="120" prefHeight="120">
+        <Label text="HOLD (TAB)" styleClass="nextBrickLabel" layoutX="20" layoutY="5"/>
+        <BorderPane styleClass="holdBrick" prefWidth="100" prefHeight="70" maxWidth="100" layoutX="15" layoutY="25">
+            <center>
+                <GridPane fx:id="holdBrick" alignment="CENTER" hgap="2" vgap="1"/>
+            </center>
+        </BorderPane>
+    </Pane>
 
         <Pane layoutX="853" layoutY="272" prefWidth="120" prefHeight="120">
             <Label text="Next brick" styleClass="nextBrickLabel" layoutX="23" layoutY="5"/>
