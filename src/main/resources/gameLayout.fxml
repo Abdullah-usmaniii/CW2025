@@ -14,15 +14,16 @@
     <Pane prefWidth="800" prefHeight="600">
 
         <Pane layoutX="600" layoutY="150" prefWidth="350" prefHeight="550">
-            <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
-            <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
             <BorderPane styleClass="gameBoard" fx:id="gameBoard">
                 <center>
                     <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutY="50" layoutX="40"/>
                 </center>
             </BorderPane>
 
-            <Group fx:id="groupNotification" layoutX="10" layoutY="203">
+            <GridPane fx:id="ghostPanel" vgap="1" hgap="1"/>
+            <GridPane fx:id="brickPanel" vgap="1" hgap="1"/>
+
+            <Group fx:id="groupNotification" layoutX="14" layoutY="203">
                 <VBox alignment="CENTER">
                     <GameOverPanel fx:id="gameOverPanel"/>
                 </VBox>

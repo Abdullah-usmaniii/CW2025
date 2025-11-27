@@ -64,7 +64,7 @@
 
 .gameOverStyle {
     -fx-font-family: "Let's go Digital";
-    -fx-font-size: 42;
+    -fx-font-size: 40;
     -fx-background-color: red;
 }
 
@@ -114,9 +114,16 @@
     -fx-border-radius: 10;
     -fx-cursor: hand;
     -fx-padding: 8 15 8 15;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 4.5);
+    -fx-effect: drop shadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 4.5);
 }
 
 .redButton:hover {
     -fx-background-color: linear-gradient(to bottom, #d32f2f, #f44336);
+}
+
+.game-grid-cell {
+    /* #A1A1A1 with 50% opacity using rgba(161, 161, 161, 0.5) */
+    -fx-fill: rgba(161, 161, 161, 0.15);
+    -fx-stroke: transparent;
+    -fx-stroke-width: 0;
 }
