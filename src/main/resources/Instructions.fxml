@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+
+<StackPane style="-fx-background-color: rgba(0, 0, 0, 0.85);"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.comp2042.view.InstructionsController">
+
+    <VBox alignment="CENTER" spacing="20">
+        <Text text="INSTRUCTIONS" style="-fx-font-size: 60px; -fx-fill: white; -fx-font-family: 'Let\'s go Digital';"/>
+
+        <VBox alignment="CENTER" spacing="10">
+            <Text text="Left Arrow / A : Move Left" styleClass="instructionBody"/>
+            <Text text="Right Arrow / D : Move Right" styleClass="instructionBody"/>
+            <Text text="Up Arrow / W : Rotate" styleClass="instructionBody"/>
+            <Text text="Down Arrow / S : Soft Drop" styleClass="instructionBody"/>
+            <Text text="Space : Hard Drop" styleClass="instructionBody"/>
+            <Text text="Tab : Hold Brick" styleClass="instructionBody"/>
+            <Text text="Esc : Pause Game" styleClass="instructionBody"/>
+        </VBox>
+
+        <Button text="BACK" onAction="#handleBack"
+                prefWidth="220" styleClass="ipad-dark-grey"/>
+    </VBox>
+
+    <stylesheets>
+        <URL value="@window_style.css"/>
+    </stylesheets>
+</StackPane>
