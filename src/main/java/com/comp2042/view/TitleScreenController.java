@@ -35,6 +35,7 @@ public class TitleScreenController {
             settingsPanel.setVisible(false);
             settingsPanel.setManaged(false);
         }
+
     }
 
     @FXML

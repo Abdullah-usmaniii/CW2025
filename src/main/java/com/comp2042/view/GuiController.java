@@ -404,8 +404,7 @@ public class GuiController implements javafx.fxml.Initializable {
 
     public void bindScore(IntegerProperty integerProperty) {
         if (scoreValue != null) {
-            scoreValue.setFill(Color.RED);
-            scoreValue.setStyle("-fx-font-weight: bold; -fx-font-size: 20px;");
+
             scoreValue.textProperty().bind(integerProperty.asString());
         }
     }

@@ -13,7 +13,8 @@
            styleClass="root">
 
    <VBox alignment="CENTER" spacing="25" maxWidth="300">
-      <Text text="TETRIS" style="-fx-font-family: 'Let\'s go Digital'; -fx-font-size: 80px; -fx-fill: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);"/>
+
+      <Text fx:id="titleText" text="TETRIS" styleClass="title-text"/>
 
       <Button text="START GAME" onAction="#handleStartGame"
               prefWidth="250" prefHeight="50"
