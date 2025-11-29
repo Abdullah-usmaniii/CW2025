@@ -32,7 +32,7 @@
 
         <Pane layoutX="270" layoutY="70" prefWidth="120" prefHeight="80">
             <Label text="SCORE" styleClass="scoreClass" layoutX="600" layoutY="80"/>
-            <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="150"/>
+            <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="170"/>
         </Pane>
 
 

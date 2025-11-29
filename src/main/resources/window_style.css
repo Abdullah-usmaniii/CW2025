@@ -34,12 +34,23 @@
     -fx-background-insets: 0, 1, 4, 5, 6;
     -fx-background-radius: 9, 8, 5, 4, 3;
     -fx-padding: 8;
-    /*-fx-font-family: "Helvetica";*/
     -fx-font-family: "Let's go Digital";
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0.0, 0, 1);
+}
+
+.ipad-dark-grey:hover {
+    -fx-background-color:
+        linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),
+        linear-gradient(#020b02, #3a3a3a),
+        linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),
+        linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),
+        linear-gradient(#8a8a8a 0%, #757575 50%, #656565 51%, #3b3b3b 100%);
+
+    /* Enhance the shadow to make it glow slightly */
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.4), 5, 0.0, 0, 1);
 }
 
 .rectangleStyle {
@@ -90,39 +101,89 @@
 }
 
 .greenButton {
-    -fx-background-color: linear-gradient(to bottom, #4CAF50, #45a049);
-    -fx-text-fill: white;
+    /* 5-layer gradient stack to mimic the ipad-grey 3D bevel, but in Green */
+    -fx-background-color:
+        linear-gradient(#81c784 0%, #1b5e20 25%, #2e7d32 75%, #81c784 100%),
+        linear-gradient(#052005, #2e7d32),
+        linear-gradient(#a5d6a7 0%, #43a047 20%, #1b5e20 80%, #1b5e20 100%),
+        linear-gradient(#81c784 0%, #43a047 20%, #1b5e20 80%, #003300 100%),
+        /* Main Face */
+        linear-gradient(#66bb6a 0%, #4caf50 50%, #43a047 51%, #1b5e20 100%);
+
+    -fx-background-insets: 0, 1, 4, 5, 6;
+    -fx-background-radius: 9, 8, 5, 4, 3;
+    -fx-padding: 8;
+    -fx-font-family: "Let's go Digital";
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-cursor: hand;
-    -fx-padding: 8 15 8 15;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 4.5);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0.0, 0, 1);
 }
 
 .greenButton:hover {
-    -fx-background-color: linear-gradient(to bottom, #45a049, #4CAF50);
+    -fx-background-color:
+        linear-gradient(#81c784 0%, #1b5e20 25%, #2e7d32 75%, #81c784 100%),
+        linear-gradient(#052005, #2e7d32),
+        linear-gradient(#a5d6a7 0%, #43a047 20%, #1b5e20 80%, #1b5e20 100%),
+        linear-gradient(#81c784 0%, #43a047 20%, #1b5e20 80%, #003300 100%),
+        /* Lightened Face for Hover */
+        linear-gradient(#81c784 0%, #66bb6a 50%, #4caf50 51%, #2e7d32 100%);
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.4), 5, 0.0, 0, 1);
 }
 
+/* --- Red Button (Exit/Main Menu) --- */
 .redButton {
-    -fx-background-color: linear-gradient(to bottom, #f44336, #d32f2f);
-    -fx-text-fill: white;
+    /* 5-layer gradient stack to mimic the ipad-grey 3D bevel, but in Red */
+    -fx-background-color:
+        linear-gradient(#e57373 0%, #b71c1c 25%, #c62828 75%, #e57373 100%),
+        linear-gradient(#4a0000, #c62828),
+        linear-gradient(#ef9a9a 0%, #e53935 20%, #b71c1c 80%, #7f0000 100%),
+        linear-gradient(#ef5350 0%, #e53935 20%, #b71c1c 80%, #500000 100%),
+        /* Main Face */
+        linear-gradient(#ef5350 0%, #f44336 50%, #d32f2f 51%, #b71c1c 100%);
+
+    -fx-background-insets: 0, 1, 4, 5, 6;
+    -fx-background-radius: 9, 8, 5, 4, 3;
+    -fx-padding: 8;
+    -fx-font-family: "Let's go Digital";
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-cursor: hand;
-    -fx-padding: 8 15 8 15;
-    -fx-effect: drop shadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 4.5);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0.0, 0, 1);
 }
 
 .redButton:hover {
-    -fx-background-color: linear-gradient(to bottom, #d32f2f, #f44336);
+    -fx-background-color:
+        linear-gradient(#e57373 0%, #b71c1c 25%, #c62828 75%, #e57373 100%),
+        linear-gradient(#4a0000, #c62828),
+        linear-gradient(#ef9a9a 0%, #e53935 20%, #b71c1c 80%, #7f0000 100%),
+        linear-gradient(#ef5350 0%, #e53935 20%, #b71c1c 80%, #500000 100%),
+        /* Lightened Face for Hover */
+        linear-gradient(#ef9a9a 0%, #ef5350 50%, #e53935 51%, #c62828 100%);
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.4), 5, 0.0, 0, 1);
 }
 
 .game-grid-cell {
     -fx-fill: rgba(161, 161, 161, 0.15);
     -fx-stroke: transparent;
     -fx-stroke-width: 0;
+}
+
+.instructionBody {
+    -fx-font-family: "Let's go Digital";
+    -fx-font-size: 24px; /* Large enough to be readable */
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, black, 2, 1, 0, 0);
+    -fx-text-alignment: center;
+}
+
+.title-text {
+    -fx-font-family:"Impact";
+    -fx-font-size: 100px;
+    -fx-font-weight: bold;
+    /* Vertical Linear Gradient: Yellow (Top) to Orange (Bottom) */
+    -fx-fill: linear-gradient(from 0% 0% to 0% 100%, #FFFF00 0%, #FFA500 100%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 10, 0.5, 0, 0);
+    -fx-stroke: black;
+    -fx-stroke-width: 1;
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+
+<StackPane style="-fx-background-color: rgba(0, 0, 0, 0.85);"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.comp2042.view.PauseMenuController">
+
+    <VBox alignment="CENTER" spacing="20">
+        <Text text="PAUSED" style="-fx-font-size: 60px; -fx-fill: white; -fx-font-family: 'Let\'s go Digital';"/>
+
+        <Button text="RESUME" onAction="#handleResume"
+                prefWidth="220" styleClass="ipad-dark-grey"/>
+
+        <Button text="HIGH SCORE" onAction="#handleHighScore"
+                prefWidth="220" styleClass="ipad-dark-grey"/>
+
+        <Text fx:id="highScoreText" fill="YELLOW" visible="false"
+              style="-fx-font-family: 'Arial Black'; -fx-font-size: 24px; -fx-effect: dropshadow(gaussian, black, 2, 1, 0, 0);"/>
+
+        <Button text="MAIN MENU" onAction="#handleMainMenu"
+                prefWidth="220" styleClass="ipad-dark-grey"/>
+    </VBox>
+
+    <stylesheets>
+        <URL value="@window_style.css"/>
+    </stylesheets>
+</StackPane>

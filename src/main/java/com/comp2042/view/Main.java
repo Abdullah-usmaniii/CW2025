@@ -1,6 +1,6 @@
 package com.comp2042.view;
 
-import com.comp2042.app.GameController;
+import com.comp2042.Logic.SoundManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,42 +8,33 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.ResourceBundle;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // Load the Title Screen FXML first
+        URL location = getClass().getResource("/TitleScreen.fxml");
+        if (location == null) throw new RuntimeException("TitleScreen.fxml not found");
 
-        URL location = getClass().getClassLoader().getResource("gameLayout.fxml");
-        if (location == null) {
-            // try class-relative
-            location = getClass().getResource("gameLayout.fxml");
-        }
-        if (location == null) {
-            throw new RuntimeException("FXML not found: ensure gameLayout.fxml is on the classpath under resources");
-        }
-        ResourceBundle resources = null;
-        FXMLLoader fxmlLoader = new FXMLLoader(location, resources);
+        FXMLLoader fxmlLoader = new FXMLLoader(location);
         Parent root = fxmlLoader.load();
-        GuiController c = fxmlLoader.getController();
 
         primaryStage.setTitle("TetrisJFX");
-        Scene scene = new Scene(root);
+
+        // Create scene (800x600 default, but will be maximized)
+        Scene scene = new Scene(root, 800, 600);
         primaryStage.setScene(scene);
+
+
         primaryStage.setMaximized(true);
         primaryStage.show();
 
-        GameController gameController = new GameController(c);
-        // bind the score from the game controller to the GUI
-        c.bindScore(gameController.getScore().scoreProperty());
-        // bind the high score from the game controller to the GUI
-        c.bindHighScore(gameController.getScore().highScoreProperty());
+        // Initialize background music immediately
+        SoundManager.getInstance();
     }
 
-
     public static void main(String[] args) {
-
         launch(args);
     }
 }
