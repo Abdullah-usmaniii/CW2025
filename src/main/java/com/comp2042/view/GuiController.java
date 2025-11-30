@@ -207,9 +207,6 @@ public class GuiController implements javafx.fxml.Initializable {
     public void initGameView(int[][] boardMatrix, ViewData brick) {
         displayMatrix = new Rectangle[boardMatrix.length][boardMatrix[0].length];
 
-        // --- FIXED: Removed misaligned 'backgroundGrid' logic ---
-        // Instead, we initialize the displayMatrix with the correct background color.
-
         for (int i = 2; i < boardMatrix.length; i++) {
             for (int j = 0; j < boardMatrix[i].length; j++) {
                 Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
@@ -303,25 +300,31 @@ public class GuiController implements javafx.fxml.Initializable {
         }
     }
 
-    // Used for Pieces (Falling, Next, Hold) - Empty is Transparent
     private Paint getFillColor(int i) {
         Paint returnPaint;
         switch (i) {
-            case 0: returnPaint = Color.TRANSPARENT; break;
-            case 1: returnPaint = Color.AQUA; break;
-            case 2: returnPaint = Color.BLUEVIOLET; break;
-            case 3: returnPaint = Color.DARKGREEN; break;
-            case 4: returnPaint = Color.YELLOW; break;
-            case 5: returnPaint = Color.RED; break;
-            case 6: returnPaint = Color.BEIGE; break;
-            case 7: returnPaint = Color.BURLYWOOD; break;
-            default: returnPaint = Color.WHITE; break;
+            case 0: returnPaint = Color.TRANSPARENT;
+            break;
+            case 1: returnPaint = Color.AQUA;
+            break;
+            case 2: returnPaint = Color.BLUEVIOLET;
+            break;
+            case 3: returnPaint = Color.DARKGREEN;
+            break;
+            case 4: returnPaint = Color.YELLOW;
+            break;
+            case 5: returnPaint = Color.RED;
+            break;
+            case 6: returnPaint = Color.BEIGE;
+            break;
+            case 7: returnPaint = Color.BURLYWOOD;
+            break;
+            default: returnPaint = Color.WHITE;
+            break;
         }
         return returnPaint;
     }
 
-    // --- NEW METHOD: Used for the Main Board ---
-    // Handles the grid appearance (Empty is Translucent White)
     private Paint getBoardFillColor(int i) {
         if (i == 0) {
             return Color.rgb(255, 255, 255, 0.1);

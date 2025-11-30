@@ -89,7 +89,7 @@ public class SimpleBoard implements Board {
     public boolean createNewBrick() {
         Brick currentBrick = brickGenerator.getBrick();
         brickRotator.setBrick(currentBrick);
-        currentOffset = new Point(4, 1); // The bug responsible for spawning bricks in the middle of the board
+        currentOffset = new Point(4, 1); // The bug responsible for spawning bricks in the middle of the board, which was previously (4,10)
         canHold = true; // Reset hold ability for new brick
         return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
     }

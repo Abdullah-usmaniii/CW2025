@@ -1,13 +1,9 @@
 package com.comp2042.app;
 
-import com.comp2042.Logic.Board;
-import com.comp2042.Logic.ClearRow;
-import com.comp2042.Logic.DownData;
-import com.comp2042.Logic.SimpleBoard;
+import com.comp2042.Logic.*;
 import com.comp2042.events.EventSource;
 import com.comp2042.events.InputEventListener;
 import com.comp2042.events.MoveEvent;
-import com.comp2042.Logic.ViewData;
 import com.comp2042.view.GuiController;
 
 public class GameController implements InputEventListener {
@@ -35,22 +31,35 @@ public class GameController implements InputEventListener {
     public DownData onDownEvent(MoveEvent event) {
         boolean canMove = board.moveBrickDown();
         ClearRow clearRow = null;
-        if (!canMove) {
-            board.mergeBrickToBackground();
-            clearRow = board.clearRows();
-            if (clearRow.getLinesRemoved() > 0) {
-                board.getScore().add(clearRow.getScoreBonus());
+
+        if (canMove) {
+            if (event.getEventSource() == EventSource.USER) {
+                board.getScore().add(1);
             }
+        } else {
+            board.mergeBrickToBackground();
+
+            clearRow = board.clearRows();
+
+            // Prioritize Clear sound over Place sound
+            if (clearRow.getLinesRemoved() > 0) {
+                SoundManager.getInstance().playClearSound();
+                board.getScore().add(clearRow.getScoreBonus());
+            } else {
+                // Only plays place sound if no lines were cleared
+                SoundManager.getInstance().playPlaceSound();
+            }
+
             if (board.createNewBrick()) {
                 viewGuiController.gameOver();
             } else {
-                // Refresh next brick display when a new brick is created
+                // Refresh the next brick display when a new brick is created
                 viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
             }
 
             viewGuiController.refreshGameBackground(board.getBoardMatrix());
-
         }
+
         return new DownData(clearRow, board.getViewData());
     }
 
@@ -73,7 +82,7 @@ public class GameController implements InputEventListener {
     }
 
     @Override
-    public ViewData onHoldEvent(MoveEvent event) { // New method
+    public ViewData onHoldEvent(MoveEvent event) {
         if (board.holdBrick()) {
             // If the hold/swap was successful, update the display.
             ViewData viewData = board.getViewData();
@@ -91,10 +100,19 @@ public class GameController implements InputEventListener {
         }
 
         board.mergeBrickToBackground();
+
         ClearRow clearRow = board.clearRows();
-        if (clearRow.getLinesRemoved() > 0){
+
+        boolean rowsCleared = clearRow.getLinesRemoved() > 0;
+        if (rowsCleared){
+            // Trigger CLEAR sound effect when rows are removed
+            SoundManager.getInstance().playClearSound();
             board.getScore().add(clearRow.getScoreBonus());
+        } else {
+            // Trigger PLACE sound effect ONLY IF no rows were cleared
+            SoundManager.getInstance().playPlaceSound();
         }
+
         if (board.createNewBrick()){
             viewGuiController.gameOver();
         } else {

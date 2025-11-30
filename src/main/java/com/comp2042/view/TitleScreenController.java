@@ -44,7 +44,7 @@ public class TitleScreenController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gameLayout.fxml"));
             Parent root = loader.load();
 
-            // 1. Get the current Stage and Scene
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene currentScene = stage.getScene();
 
@@ -54,8 +54,6 @@ public class TitleScreenController {
             controller.bindScore(gameLogic.getScore().scoreProperty());
             controller.bindHighScore(gameLogic.getScore().highScoreProperty());
 
-            // 2. FIX: Swap the root instead of setting a new Scene
-            // This keeps the window maximized and prevents shrinking
             currentScene.setRoot(root);
 
             controller.newGame();

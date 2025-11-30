@@ -20,7 +20,7 @@ public class GameOverPanel extends BorderPane {
         gameOverLabel.getStyleClass().add("gameOverStyle");
 
         // New Game Button
-        newGameButton = new Button("New Game");
+        newGameButton = new Button("Replay");
         newGameButton.getStyleClass().add("greenButton");
 
         // Exit Button

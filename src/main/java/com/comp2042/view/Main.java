@@ -22,7 +22,6 @@ public class Main extends Application {
 
         primaryStage.setTitle("TetrisJFX");
 
-        // Create scene (800x600 default, but will be maximized)
         Scene scene = new Scene(root, 800, 600);
         primaryStage.setScene(scene);
 
