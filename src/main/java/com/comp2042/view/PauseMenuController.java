@@ -1,5 +1,6 @@
 package com.comp2042.view;
 
+import com.comp2042.app.Constants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +45,7 @@ public class PauseMenuController {
     @FXML
     public void handleMainMenu(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/TitleScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_TITLE_SCREEN));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

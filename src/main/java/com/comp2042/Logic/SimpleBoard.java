@@ -5,6 +5,8 @@ import com.comp2042.Logic.bricks.BrickGenerator;
 import com.comp2042.Logic.bricks.RandomBrickGenerator;
 import com.comp2042.RotationOperations.BrickRotator;
 import com.comp2042.RotationOperations.NextShapeInfo;
+import com.comp2042.app.Constants;
+
 
 import java.awt.*;
 import java.util.ArrayDeque;
@@ -104,9 +106,8 @@ public class SimpleBoard implements Board {
 
         // Add a new brick to the end of the queue (Queue moves up)
         nextBricks.add(brickGenerator.getBrick());
-
         brickRotator.setBrick(currentBrick);
-        currentOffset = new Point(4, 1);
+        currentOffset = new Point(Constants.SPAWN_X, Constants.SPAWN_Y);
         canHold = true;
         return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
     }
@@ -128,7 +129,7 @@ public class SimpleBoard implements Board {
             heldBrick = currentBrick;
             brickRotator.setBrick(temp);
             // We do NOT pull from the queue on a swap, we just swap the active piece
-            currentOffset = new Point(4, 1);
+            currentOffset = new Point(Constants.SPAWN_X, Constants.SPAWN_Y);
         }
         return true;
     }

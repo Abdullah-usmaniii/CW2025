@@ -1,6 +1,7 @@
 package com.comp2042.view;
 
 import com.comp2042.Logic.SoundManager;
+import com.comp2042.app.Constants;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,7 +42,7 @@ public class TitleScreenController {
     @FXML
     public void handleStartGame(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gameLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_GAME_LAYOUT));
             Parent root = loader.load();
 
 
@@ -74,7 +75,7 @@ public class TitleScreenController {
     public void handleInstructions(ActionEvent event) {
         if (instructionsOverlay == null) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Instructions.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_INSTRUCTIONS));
                 instructionsOverlay = loader.load();
 
                 // Pass this controller to the instructions controller so it can call closeInstructions()

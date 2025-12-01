@@ -32,6 +32,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import com.comp2042.app.Constants;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,7 +42,7 @@ import java.util.ResourceBundle;
 
 public class GuiController implements javafx.fxml.Initializable {
 
-    private static final int BRICK_SIZE = 20;
+    private static final int BRICK_SIZE = Constants.BRICK_SIZE;
 
     @FXML
     private StackPane rootPane;
@@ -89,8 +90,7 @@ public class GuiController implements javafx.fxml.Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
-        gamePanel.setFocusTraversable(true);
+        Font.loadFont(getClass().getClassLoader().getResource(Constants.RESOURCE_FONT_DIGITAL).toExternalForm(), 38);        gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
 
         gamePanel.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -162,7 +162,7 @@ public class GuiController implements javafx.fxml.Initializable {
     public void showPauseMenu() {
         if (pauseOverlay == null) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/PauseMenu.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_PAUSE_MENU));
                 pauseOverlay = loader.load();
 
                 PauseMenuController pauseController = loader.getController();
@@ -244,7 +244,7 @@ public class GuiController implements javafx.fxml.Initializable {
         initHoldBrick(brick.getHeldBrickData());
 
         timeLine = new Timeline(new KeyFrame(
-                Duration.millis(400),
+                Duration.millis(Constants.GAME_SPEED_MILLIS),
                 ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
         ));
         timeLine.setCycleCount(Timeline.INDEFINITE);

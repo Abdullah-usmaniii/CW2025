@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.comp2042.app.Constants;
 
 public class MatrixOperations {
 
@@ -85,7 +86,7 @@ public class MatrixOperations {
                 break;
             }
         }
-        int scoreBonus = 50 * clearedRows.size() * clearedRows.size();
+        int scoreBonus = Constants.SCORE_PER_LINE_MULTIPLIER * clearedRows.size() * clearedRows.size();
         return new ClearRow(clearedRows.size(), tmp, scoreBonus);
     }
 

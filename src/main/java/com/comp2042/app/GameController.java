@@ -5,10 +5,11 @@ import com.comp2042.events.EventSource;
 import com.comp2042.events.InputEventListener;
 import com.comp2042.events.MoveEvent;
 import com.comp2042.view.GuiController;
+import com.comp2042.app.Constants;
 
 public class GameController implements InputEventListener {
 
-    private Board board = new SimpleBoard(25, 10);
+    private Board board = new SimpleBoard(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT);
 
     private final GuiController viewGuiController;
 
