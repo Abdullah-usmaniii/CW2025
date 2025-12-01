@@ -7,14 +7,16 @@
 
 .nextBrick {
     -fx-border-width: 4px;
-    -fx-border-color: orange;
-    -fx-border-radius: 9px;
+    /* Matched to Title Gradient: Yellow to Orange */
+    -fx-border-color: linear-gradient(from 0% 0% to 0% 100%, #FFFF00 0%, #FFA500 100%);
+    /* Removed border-radius to make it rectangular */
 }
 
 .gameBoard {
-    -fx-border-color: white;
+    /* Matched to Title Gradient: Yellow to Orange */
+    -fx-border-color: linear-gradient(from 0% 0% to 0% 100%, #FFFF00 0%, #FFA500 100%);
     -fx-border-width: 12px;
-    -fx-border-radius: 12px;
+    -fx-border-radius: 12px; /* Kept rounded corners for the main board as requested only for hold/next */
 }
 
 .nextBrickLabel {
@@ -96,8 +98,9 @@
 
 .holdBrick {
     -fx-border-width: 4px;
-    -fx-border-color: #00BFFF;
-    -fx-border-radius: 9px;
+    /* Matched to Title Gradient: Yellow to Orange */
+    -fx-border-color: linear-gradient(from 0% 0% to 0% 100%, #FFFF00 0%, #FFA500 100%);
+    /* Removed border-radius to make it rectangular */
 }
 
 .greenButton {

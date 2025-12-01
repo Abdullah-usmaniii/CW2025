@@ -30,13 +30,13 @@
             </Group>
         </Pane>
 
-        <Pane layoutX="270" layoutY="70" prefWidth="120" prefHeight="80">
+        <Pane layoutX="250" layoutY="70" prefWidth="120" prefHeight="80">
             <Label text="SCORE" styleClass="scoreClass" layoutX="600" layoutY="80"/>
             <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="170"/>
         </Pane>
 
 
-    <Pane layoutX="450" layoutY="200" prefWidth="120" prefHeight="120">
+    <Pane layoutX="488" layoutY="140" prefWidth="120" prefHeight="120">
         <Label text="HOLD (TAB)" styleClass="nextBrickLabel" layoutX="20" layoutY="5"/>
         <BorderPane styleClass="holdBrick" prefWidth="100" prefHeight="70" maxWidth="100" layoutX="15" layoutY="25">
             <center>
@@ -45,9 +45,9 @@
         </BorderPane>
     </Pane>
 
-        <Pane layoutX="853" layoutY="272" prefWidth="120" prefHeight="120">
+        <Pane layoutX="817" layoutY="240" prefWidth="120" prefHeight="120">
             <Label text="Next brick" styleClass="nextBrickLabel" layoutX="23" layoutY="5"/>
-            <BorderPane styleClass="nextBrick" prefWidth="100" prefHeight="70" maxWidth="100" layoutX="15" layoutY="25">
+            <BorderPane styleClass="nextBrick" prefWidth="100" prefHeight="350" maxWidth="100" layoutX="15" layoutY="25">
                 <center>
                     <GridPane fx:id="nextBrick" alignment="CENTER" hgap="2" vgap="1"/>
                 </center>

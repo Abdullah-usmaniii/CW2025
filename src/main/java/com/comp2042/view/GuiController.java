@@ -35,6 +35,8 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class GuiController implements javafx.fxml.Initializable {
@@ -70,7 +72,8 @@ public class GuiController implements javafx.fxml.Initializable {
     private GridPane nextBrick;
 
     private Rectangle[][] ghostRectangles;
-    private Rectangle[][] nextBrickMatrix;
+
+    private final List<Rectangle[][]> nextBrickMatrices = new ArrayList<>();
 
     @FXML
     private GameOverPanel gameOverPanel;
@@ -132,7 +135,6 @@ public class GuiController implements javafx.fxml.Initializable {
             }
         });
 
-        // GameOverPanel logic
         gameOverPanel.setVisible(false);
         gameOverPanel.setNewGameAction(e -> {
             newGame();
@@ -210,7 +212,6 @@ public class GuiController implements javafx.fxml.Initializable {
         for (int i = 2; i < boardMatrix.length; i++) {
             for (int j = 0; j < boardMatrix[i].length; j++) {
                 Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                // Use getBoardFillColor to ensure empty cells look like grid
                 rectangle.setFill(getBoardFillColor(boardMatrix[i][j]));
                 displayMatrix[i][j] = rectangle;
                 gamePanel.add(rectangle, j, i - 2);
@@ -250,18 +251,31 @@ public class GuiController implements javafx.fxml.Initializable {
         timeLine.play();
     }
 
-    public void initNextBrick(int[][] nextBrickData) {
+    public void initNextBrick(List<int[][]> nextBricksData) {
         nextBrick.getChildren().clear();
-        nextBrickMatrix = new Rectangle[nextBrickData.length][nextBrickData[0].length];
-        for (int i = 0; i < nextBrickData.length; i++) {
-            for (int j = 0; j < nextBrickData[i].length; j++) {
-                Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
-                rectangle.setFill(getFillColor(nextBrickData[i][j]));
-                rectangle.setArcHeight(9);
-                rectangle.setArcWidth(9);
-                nextBrickMatrix[i][j] = rectangle;
-                nextBrick.add(rectangle, j, i);
+        nextBrickMatrices.clear();
+
+        int verticalOffset = 0;
+
+        // Loop through each brick in the queue
+        for (int[][] brickData : nextBricksData) {
+            Rectangle[][] matrix = new Rectangle[brickData.length][brickData[0].length];
+
+            for (int i = 0; i < brickData.length; i++) {
+                for (int j = 0; j < brickData[i].length; j++) {
+                    Rectangle rectangle = new Rectangle(BRICK_SIZE, BRICK_SIZE);
+                    rectangle.setFill(getFillColor(brickData[i][j]));
+                    rectangle.setArcHeight(9);
+                    rectangle.setArcWidth(9);
+                    matrix[i][j] = rectangle;
+                    // Stack them vertically by adding offset to the row index
+                    // Add 1 extra row of spacing between bricks
+                    nextBrick.add(rectangle, j, i + verticalOffset);
+                }
             }
+            nextBrickMatrices.add(matrix);
+            // 4 rows for brick + 1 row for padding = 5 rows offset
+            verticalOffset += 5;
         }
     }
 
@@ -280,11 +294,17 @@ public class GuiController implements javafx.fxml.Initializable {
         }
     }
 
-    public void refreshNextBrick(int[][] nextBrickData) {
-        if (nextBrickMatrix != null) {
-            for (int i = 0; i < nextBrickData.length; i++) {
-                for (int j = 0; j < nextBrickData[i].length; j++) {
-                    nextBrickMatrix[i][j].setFill(getFillColor(nextBrickData[i][j]));
+    // UPDATED: Iterates through the list to refresh all 3 bricks
+    public void refreshNextBrick(List<int[][]> nextBricksData) {
+        if (!nextBrickMatrices.isEmpty() && nextBrickMatrices.size() == nextBricksData.size()) {
+            for (int k = 0; k < nextBricksData.size(); k++) {
+                int[][] data = nextBricksData.get(k);
+                Rectangle[][] matrix = nextBrickMatrices.get(k);
+
+                for (int i = 0; i < data.length; i++) {
+                    for (int j = 0; j < data[i].length; j++) {
+                        matrix[i][j].setFill(getFillColor(data[i][j]));
+                    }
                 }
             }
         }
@@ -304,23 +324,23 @@ public class GuiController implements javafx.fxml.Initializable {
         Paint returnPaint;
         switch (i) {
             case 0: returnPaint = Color.TRANSPARENT;
-            break;
+                break;
             case 1: returnPaint = Color.AQUA;
-            break;
+                break;
             case 2: returnPaint = Color.BLUEVIOLET;
-            break;
+                break;
             case 3: returnPaint = Color.DARKGREEN;
-            break;
+                break;
             case 4: returnPaint = Color.YELLOW;
-            break;
+                break;
             case 5: returnPaint = Color.RED;
-            break;
+                break;
             case 6: returnPaint = Color.BEIGE;
-            break;
+                break;
             case 7: returnPaint = Color.BURLYWOOD;
-            break;
+                break;
             default: returnPaint = Color.WHITE;
-            break;
+                break;
         }
         return returnPaint;
     }
@@ -360,7 +380,6 @@ public class GuiController implements javafx.fxml.Initializable {
     public void refreshGameBackground(int[][] board) {
         for (int i = 2; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                // Use getBoardFillColor here
                 Paint color = getBoardFillColor(board[i][j]);
                 displayMatrix[i][j].setFill(color);
                 displayMatrix[i][j].setArcHeight(9);
