@@ -49,3 +49,48 @@ settings button in the main menu.
 - **Title Screen/Main Menu:** The game features a main menu that allows players to start a new game, access settings to adjust the background music volume. The main menu provides an intuitive instructions interface for explaining the game mechanics to the user.
 
 
+
+## 2.2 Additional features not implemented
+
+-
+
+
+## 3 Refactoring
+
+This Section will cover the design patterns implemented in various classes, the bugs fixed within the previous existing code, 
+encapsulation implemented within the project, and the challenges faced during refactoring.
+
+
+## 3.1 Packages and their classes
+
+- **com.comp2042.app:** This package acts as the bridge or the Application layer. It connects the Logic package to the view package.
+  
+  + **GameController:** This is the "brain" that connects input to action. When the GuiController detects
+  a key press, it tells the GameController. GameController then tells Board.java to move a piece, and tells the GuiController to redraw. It exists here to decouple the View from the Logic.
+  + **Constants:** Constants class encapsulates all the constant values and links used in the project. The reason it is placed in the app package since the app package acts as the bridge package between other main packages.
+  
+- **com.comp2042.events:** This package implements the Observer. It defines a standard way for different parts of the app to talk to each other (specifically, sending user input from the View to the Controller).
+  
+  + **InputEventListener:** An interface defining what actions the user can take (move down, rotate, etc.).
+  + **MoveEvent:** A wrapper class that carries details about the event(e.g., did the user press a key).
+  + Reason for existence: This decoupling allows you to change the input method (e.g., adding joystick support) without rewriting the core game logic.
+
+- **com.comp2042.Logic:** This package contains the logic and the internal state of the game. It represents the Model, since it deals with what is happening in the game (math, grid, collisions).
+
+  + **Board and SimpleBoard:** These manage the game grid. They exist here because the state of the board (where blocks are) is the core data of the game.
+  + **Score:** Tracks the player's current points.
+  + **SoundManager:** Handles the audio logic in the game.
+  + **ViewData and DownData:** They exist to package up the state of the board and send it to the View without giving the View direct access to the complex Board logic.
+  + **Logic.bricks:** The reason for sub-packaging these brick class because these classes define the shapes and rotation states of individual bricks, and sub-packaging keeps the main Logic folder clean.
+
+- **com.comp2042.view:** This package handles the Graphical User Interface (GUI). Classes here are responsible for drawing images, rectangles, and text to the screen. They should not know the rules of Tetris; they just display what they are told.
+
+  + **GuiController:** This is the JavaFX controller linked to your FXML files. It creates Tetris objects and handles animations. It is the main file responsible for main visual aspects of the game.
+  + **GameOverPanel and NotificationPanel:** Custom UI components that appear as overlays after the game ends.
+  + **Main:** The entry point of JavaFX application. It sets up the stage and loads up the title screen which then allows the user to redirect to the game and other panels.
+  +  **PauseMenuController, TitleScreenController, InstructionsController:** These classes are additional classes that are used to boost user-friendly interfaces and allow the user to access the new addtional features implemented such as the controlling the music volume.
+
+
+- **com.comp2042.RotationOperations:** This is an utility package extracted to handle complex matrix math related to rotation.
+
+  + **BrickRotator:** Contains the math to rotate a 2D matrix tetris brick.
