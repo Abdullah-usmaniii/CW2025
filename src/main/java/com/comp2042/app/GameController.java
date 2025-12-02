@@ -5,7 +5,7 @@ import com.comp2042.events.EventSource;
 import com.comp2042.events.InputEventListener;
 import com.comp2042.events.MoveEvent;
 import com.comp2042.view.GuiController;
-import com.comp2042.app.Constants;
+
 
 public class GameController implements InputEventListener {
 
@@ -19,7 +19,6 @@ public class GameController implements InputEventListener {
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
         // Initialize next brick display
-        viewGuiController.initNextBrick(board.getViewData().getNextBrickData());
         // bindScore moved to Main so the UI wiring happens there
     }
 
@@ -96,9 +95,15 @@ public class GameController implements InputEventListener {
 
     @Override
     public DownData onHardDropEvent(MoveEvent event){
+        // Initialize a counter for the points based on distance dropped
+        int points = 0;
+
+        // Loop moves the brick down until it hits something
         while(board.moveBrickDown()){
-            // Keep moving down
+            points++; // Count 1 point for every successful move down
         }
+        // Add the total drop distance points to the score
+        board.getScore().add(points);
 
         board.mergeBrickToBackground();
 

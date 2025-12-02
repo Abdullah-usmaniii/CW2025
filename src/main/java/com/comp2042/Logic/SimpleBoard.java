@@ -25,8 +25,6 @@ public class SimpleBoard implements Board {
     private final Score score;
     private Brick heldBrick = null;
     private boolean canHold = true;
-
-    // Queue to hold the next 3 bricks
     private final Deque<Brick> nextBricks = new ArrayDeque<>();
 
     public SimpleBoard(int width, int height) {
@@ -118,20 +116,41 @@ public class SimpleBoard implements Board {
             return false;
         }
 
-        canHold = false;
         Brick currentBrick = brickRotator.getBrick();
 
         if (heldBrick == null) {
+            // Case 1: Hold is empty. Store current and spawn new brick.
             heldBrick = currentBrick;
             createNewBrick();
+
+            // Mark hold as used only after successful operation
+            canHold = false;
+            return true;
         } else {
-            Brick temp = heldBrick;
+            // Case 2: Swap held brick into the game.
+            Brick incomingBrick = heldBrick;
+
+            // Calculate if the incoming brick (reset to rotation 0) fits at the CURRENT position.
+            // We use .get(0) because setBrick() usually resets rotation to 0.
+            int[][] nextShape = incomingBrick.getShapeMatrix().get(0);
+
+            boolean hasConflict = MatrixOperations.intersect(
+                    currentGameMatrix,
+                    nextShape,
+                    (int) currentOffset.getX(),
+                    (int) currentOffset.getY()
+            );
+
+
+            if (hasConflict) {
+                return false;
+            }
             heldBrick = currentBrick;
-            brickRotator.setBrick(temp);
-            // We do NOT pull from the queue on a swap, we just swap the active piece
-            currentOffset = new Point(Constants.SPAWN_X, Constants.SPAWN_Y);
+            brickRotator.setBrick(incomingBrick);
+
+            canHold = false;
+            return true;
         }
-        return true;
     }
 
     @Override
@@ -178,6 +197,7 @@ public class SimpleBoard implements Board {
     @Override
     public void mergeBrickToBackground() {
         currentGameMatrix = MatrixOperations.merge(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+
     }
 
     @Override

@@ -19,6 +19,7 @@ public interface Board {
     ViewData getViewData();
 
     void mergeBrickToBackground();
+    
 
     ClearRow clearRows();
 
