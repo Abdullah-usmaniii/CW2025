@@ -100,4 +100,17 @@ encapsulation implemented within the project, and the challenges faced during re
 
 ## 3.2 Design pattern implementation in classes
 
-- **Command Pattern:** The GameInputHandler.java previously had a complex chain of if-else statements. I replaced the if-else chain with a Map that binds a KeyCode to a Runnable Command. This makes the code cleaner and easier to extend. For example, if you want to add 'W', 'A', 'S', 'D' support, you just add one line to the map instead of writing new else if logic. It separates the trigger key from the Action method.
+- **Command Pattern:** The GameInputHandler.java previously had a complex chain of if-else statements. I replaced the if-else chain with a Map that binds a KeyCode to a Runnable Command. 
+This makes the code cleaner and easier to extend. For example, if you want to add 'W', 'A', 'S', 'D' support, you just add one line to the map instead of writing new else if logic. It separates the trigger key from the Action method.
+
+
+- **Singleton Pattern:** The singleton Pattern used in SoundManager.java ensures the class has only one instance throughout the entire application. The SoundManager constructor is marked **Private**, so this prevents any other class from directly accessing it.
+This pattern is essential for audio resources because it will ensure:
+    + Avoiding multiple audio devices or starting duplicate background music tracks.
+    + Volume changes made by the TitleScreenController's slider immediately affect the one music player being used.
+  
+
+- **Flyweight Pattern:** The Flyweight pattern had to be applied to brickShape classes(OBrick, JBrick, etc.). This is because everytime you say for instance **new JBrick()** the previous code creates 4 new 2D arrays int[][] and 
+a new ArrayList to define the 'J' shape. When the user plays for let's say more than 10 minutes, the program would've created hundreds of identical arrays, wasting memory and CPU time.
+The solution was using the Flyweight pattern as the shape of the brick is constant. Since the program creates a specific shape like J once as a static variable and
+every new JBrick simply points to this single shared definition.
