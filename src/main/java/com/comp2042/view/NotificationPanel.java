@@ -14,8 +14,18 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+/**
+ * A temporary floating panel used to display score bonuses (e.g., "+100").
+ * It animates (fades and moves up) before removing itself from the view.
+ */
 public class NotificationPanel extends BorderPane {
 
+    /**
+     * Constructs a notification panel with the specified text.
+     * Applies styling and glowing effects to the text.
+     *
+     * @param text The score or message to display in the notification.
+     */
     public NotificationPanel(String text) {
         setMinHeight(200);
         setMinWidth(220);
@@ -28,6 +38,13 @@ public class NotificationPanel extends BorderPane {
 
     }
 
+
+    /**
+     * Starts the animation for the score notification and removes it from the parent list upon completion.
+     * The animation consists of moving the text upwards while fading it out.
+     *
+     * @param list The list of children nodes from the parent container, used to remove this panel after the animation.
+     */
     public void showScore(ObservableList<Node> list) {
         FadeTransition ft = new FadeTransition(Duration.millis(2000), this);
         TranslateTransition tt = new TranslateTransition(Duration.millis(2500), this);

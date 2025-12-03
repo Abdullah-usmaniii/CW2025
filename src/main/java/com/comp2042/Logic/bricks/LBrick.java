@@ -5,30 +5,31 @@ import com.comp2042.Logic.MatrixOperations;
 import java.util.ArrayList;
 import java.util.List;
 
-final class LBrick implements Brick {
+public final class LBrick implements Brick {
 
-    private final List<int[][]> brickMatrix = new ArrayList<>();
+    // Flyweight: Static storage shared by all LBrick instances
+    private static final List<int[][]> BRICK_MATRIX = new ArrayList<>();
 
-    public LBrick() {
-        brickMatrix.add(new int[][]{
+    static {
+        BRICK_MATRIX.add(new int[][]{
                 {0, 0, 0, 0},
                 {0, 3, 3, 3},
                 {0, 3, 0, 0},
                 {0, 0, 0, 0}
         });
-        brickMatrix.add(new int[][]{
+        BRICK_MATRIX.add(new int[][]{
                 {0, 0, 0, 0},
                 {0, 3, 3, 0},
                 {0, 0, 3, 0},
                 {0, 0, 3, 0}
         });
-        brickMatrix.add(new int[][]{
+        BRICK_MATRIX.add(new int[][]{
                 {0, 0, 0, 0},
                 {0, 0, 3, 0},
                 {3, 3, 3, 0},
                 {0, 0, 0, 0}
         });
-        brickMatrix.add(new int[][]{
+        BRICK_MATRIX.add(new int[][]{
                 {0, 3, 0, 0},
                 {0, 3, 0, 0},
                 {0, 3, 3, 0},
@@ -36,8 +37,12 @@ final class LBrick implements Brick {
         });
     }
 
+    public LBrick() {
+        // Empty constructor - data is initialized statically
+    }
+
     @Override
     public List<int[][]> getShapeMatrix() {
-        return MatrixOperations.deepCopyList(brickMatrix);
+        return MatrixOperations.deepCopyList(BRICK_MATRIX);
     }
 }

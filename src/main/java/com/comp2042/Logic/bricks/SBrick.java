@@ -5,18 +5,19 @@ import com.comp2042.Logic.MatrixOperations;
 import java.util.ArrayList;
 import java.util.List;
 
-final class SBrick implements Brick {
+public final class SBrick implements Brick {
 
-    private final List<int[][]> brickMatrix = new ArrayList<>();
+    // Flyweight: Static storage shared by all SBrick instances
+    private static final List<int[][]> BRICK_MATRIX = new ArrayList<>();
 
-    public SBrick() {
-        brickMatrix.add(new int[][]{
+    static {
+        BRICK_MATRIX.add(new int[][]{
                 {0, 0, 0, 0},
                 {0, 5, 5, 0},
                 {5, 5, 0, 0},
                 {0, 0, 0, 0}
         });
-        brickMatrix.add(new int[][]{
+        BRICK_MATRIX.add(new int[][]{
                 {5, 0, 0, 0},
                 {5, 5, 0, 0},
                 {0, 5, 0, 0},
@@ -24,8 +25,12 @@ final class SBrick implements Brick {
         });
     }
 
+    public SBrick() {
+        // Empty constructor - data is initialized statically
+    }
+
     @Override
     public List<int[][]> getShapeMatrix() {
-        return MatrixOperations.deepCopyList(brickMatrix);
+        return MatrixOperations.deepCopyList(BRICK_MATRIX);
     }
 }

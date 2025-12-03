@@ -1,5 +1,6 @@
 package com.comp2042.view;
 
+import com.comp2042.app.Constants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Controller for the Pause Menu overlay.
+ * Handles user interactions such as resuming the game, checking high scores, or returning to the main menu.
+ */
 public class PauseMenuController {
 
     private GuiController gameController;
@@ -18,10 +23,23 @@ public class PauseMenuController {
     @FXML
     private Text highScoreText;
 
+    /**
+     * Links this pause menu to the main game controller.
+     * Required to trigger game actions like resuming or fetching scores.
+     *
+     * @param gameController The instance of the main GuiController.
+     */
     public void setGameController(GuiController gameController) {
+
         this.gameController = gameController;
     }
 
+    /**
+     * Handles the "Resume" button click.
+     * Closes the pause menu and unpauses the game.
+     *
+     * @param event The ActionEvent triggered by the button.
+     */
     @FXML
     public void handleResume(ActionEvent event) {
         if (gameController != null) {
@@ -29,6 +47,12 @@ public class PauseMenuController {
         }
     }
 
+    /**
+     * Handles the "High Score" button click.
+     * Toggles the visibility of the high score text.
+     *
+     * @param event The ActionEvent triggered by the button.
+     */
     @FXML
     public void handleHighScore(ActionEvent event) {
         if (gameController != null && highScoreText != null) {
@@ -41,10 +65,16 @@ public class PauseMenuController {
         }
     }
 
+    /**
+     * Handles the "Main Menu" button click.
+     * Loads the Title Screen scene and replaces the current game scene.
+     *
+     * @param event The ActionEvent triggered by the button.
+     */
     @FXML
     public void handleMainMenu(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/TitleScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_TITLE_SCREEN));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

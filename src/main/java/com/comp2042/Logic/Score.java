@@ -10,6 +10,9 @@ public final class Score {
     private final IntegerProperty highScore = new SimpleIntegerProperty(0);
     private final Preferences prefs = Preferences.userNodeForPackage(Score.class);
 
+    /**
+     * 
+     */
     public Score() {
         // Load high score from preferences
         highScore.setValue(prefs.getInt("highScore", 0));

@@ -1,6 +1,7 @@
 package com.comp2042.view;
 
 import com.comp2042.Logic.SoundManager;
+import com.comp2042.app.Constants;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +15,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+/**
+ * Controller for the main Title Screen.
+ * Manages navigation to the game, settings, instructions, and exiting the application.
+ */
 public class TitleScreenController {
 
     @FXML private StackPane rootPane; // Reference to the root stack pane
@@ -22,6 +27,10 @@ public class TitleScreenController {
 
     private Parent instructionsOverlay;
 
+    /**
+     * Initializes the controller.
+     * Sets up the volume slider with the current volume from SoundManager.
+     */
     @FXML
     public void initialize() {
         SoundManager soundManager = SoundManager.getInstance();
@@ -38,10 +47,16 @@ public class TitleScreenController {
 
     }
 
+    /**
+     * Handles the "Start Game" button click.
+     * Loads the Game Layout FXML, initializes the game logic, and transitions the scene.
+     *
+     * @param event The ActionEvent triggered by the button.
+     */
     @FXML
     public void handleStartGame(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gameLayout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_GAME_LAYOUT));
             Parent root = loader.load();
 
 
@@ -63,6 +78,12 @@ public class TitleScreenController {
         }
     }
 
+    /**
+     * Handles the "Settings" button click.
+     * Toggles the visibility of the settings panel (e.g., volume control).
+     *
+     * @param event The ActionEvent triggered by the button.
+     */
     @FXML
     public void handleSettings(ActionEvent event) {
         boolean isVisible = settingsPanel.isVisible();
@@ -70,11 +91,17 @@ public class TitleScreenController {
         settingsPanel.setManaged(!isVisible);
     }
 
+    /**
+     * Handles the "Instructions" button click.
+     * Loads and displays the instructions overlay.
+     *
+     * @param event The ActionEvent triggered by the button.
+     */
     @FXML
     public void handleInstructions(ActionEvent event) {
         if (instructionsOverlay == null) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Instructions.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_INSTRUCTIONS));
                 instructionsOverlay = loader.load();
 
                 // Pass this controller to the instructions controller so it can call closeInstructions()
@@ -93,12 +120,21 @@ public class TitleScreenController {
         }
     }
 
+    /**
+     * Handles the "Exit" button click.
+     * Terminates the application.
+     *
+     * @param event The ActionEvent triggered by the button.
+     */
     @FXML
     public void handleExit(ActionEvent event) {
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     * Closes the instructions overlay by removing it from the root pane.
+     */
     public void closeInstructions() {
         if (rootPane != null && instructionsOverlay != null) {
             rootPane.getChildren().remove(instructionsOverlay);
