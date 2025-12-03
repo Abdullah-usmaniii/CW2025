@@ -94,3 +94,6 @@ encapsulation implemented within the project, and the challenges faced during re
 - **com.comp2042.RotationOperations:** This is an utility package extracted to handle complex matrix math related to rotation.
 
   + **BrickRotator:** Contains the math to rotate a 2D matrix tetris brick.
+
+
+## 3.2 Design patterns Implemented
