@@ -2,6 +2,7 @@ package com.comp2042.view;
 
 import com.comp2042.Logic.DownData;
 import com.comp2042.Logic.ViewData;
+import com.comp2042.app.Constants;
 import com.comp2042.events.EventSource;
 import com.comp2042.events.EventType;
 import com.comp2042.events.InputEventListener;
@@ -69,7 +70,7 @@ public class GuiController implements Initializable {
         // Load fonts/effects
         try {
             // Ensure this resource exists or wrap in try-catch to prevent crash
-            String fontPath = getClass().getClassLoader().getResource("digital.ttf").toExternalForm();
+            String fontPath = getClass().getClassLoader().getResource(Constants.RESOURCE_FONT_DIGITAL).toExternalForm();
             Font.loadFont(fontPath, 38);
         } catch (Exception e) {
             System.err.println("Font not found, using default.");
@@ -139,8 +140,6 @@ public class GuiController implements Initializable {
             loopManager.play();
         }
     }
-
-
     /**
      * Initiates a move to the left.
      * Called by the InputHandler when the move left key is pressed.
@@ -149,7 +148,6 @@ public class GuiController implements Initializable {
         ViewData data = eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER));
         renderer.refreshBrick(data);
     }
-
     /**
      * Initiates a move to the right.
      * Called by the InputHandler when the move right key is pressed.
@@ -158,7 +156,6 @@ public class GuiController implements Initializable {
         ViewData data = eventListener.onRightEvent(new MoveEvent(EventType.RIGHT, EventSource.USER));
         renderer.refreshBrick(data);
     }
-
     /**
      * Initiates a rotation of the brick.
      * Called by the InputHandler when the rotate key is pressed.
@@ -167,7 +164,6 @@ public class GuiController implements Initializable {
         ViewData data = eventListener.onRotateEvent(new MoveEvent(EventType.ROTATE, EventSource.USER));
         renderer.refreshBrick(data);
     }
-
     /**
      * Initiates a downward movement triggered by the user (soft drop).
      */
@@ -292,7 +288,7 @@ public class GuiController implements Initializable {
     public void showPauseMenu() {
         if (pauseOverlay == null) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/PauseMenu.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_PAUSE_MENU));
                 pauseOverlay = loader.load();
                 PauseMenuController pauseController = loader.getController();
                 pauseController.setGameController(this);

@@ -1,5 +1,6 @@
 package com.comp2042.view;
 
+import com.comp2042.app.Constants;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -28,7 +29,7 @@ public class GameLoopManager {
      */
     private void initTimeline() {
         timeLine = new Timeline(new KeyFrame(
-                Duration.millis(400),
+                Duration.millis(Constants.GAME_SPEED_MILLIS),
                 ae -> tickAction.run()
         ));
         timeLine.setCycleCount(Timeline.INDEFINITE);

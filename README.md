@@ -97,3 +97,7 @@ encapsulation implemented within the project, and the challenges faced during re
 - **com.comp2042.RotationOperations:** This is an utility package extracted to handle complex matrix math related to rotation.
 
   + **BrickRotator:** Contains the math to rotate a 2D matrix tetris brick.
+
+## 3.2 Design pattern implementation in classes
+
+- **Command Pattern:** The GameInputHandler.java previously had a complex chain of if-else statements. I replaced the if-else chain with a Map that binds a KeyCode to a Runnable Command. This makes the code cleaner and easier to extend. For example, if you want to add 'W', 'A', 'S', 'D' support, you just add one line to the map instead of writing new else if logic. It separates the trigger key from the Action method.

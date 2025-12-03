@@ -1,6 +1,7 @@
 package com.comp2042.view;
 
 import com.comp2042.Logic.ViewData;
+import com.comp2042.app.Constants;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class GameRenderer {
 
-    private static final int BRICK_SIZE = 20;
+    private static final int BRICK_SIZE = Constants.BRICK_SIZE;
 
     // Visual Arrays (Encapsulated)
     private Rectangle[][] displayMatrix;

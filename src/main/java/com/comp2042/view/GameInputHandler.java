@@ -5,13 +5,17 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Handles keyboard input for the game.
- * Translates raw KeyEvents into game actions and delegates them to the GuiController.
+ * Uses the Command Pattern to map inputs to actions.
  */
 public class GameInputHandler implements EventHandler<KeyEvent> {
 
     private final GuiController guiController;
+    private final Map<KeyCode, Runnable> controlMap = new HashMap<>();
 
     /**
      * Constructs the input handler and attaches it to the specified input source.
@@ -21,8 +25,32 @@ public class GameInputHandler implements EventHandler<KeyEvent> {
      */
     public GameInputHandler(Node inputSource, GuiController guiController) {
         this.guiController = guiController;
-        // Attach this handler to the game panel
         inputSource.setOnKeyPressed(this);
+        initializeControls();
+    }
+
+    /**
+     * Initializes the key bindings using the Command Pattern.
+     * Maps KeyCodes to specific Runnable actions.
+     */
+    private void initializeControls() {
+        // Movement Controls
+        controlMap.put(KeyCode.LEFT, guiController::moveLeft);
+        controlMap.put(KeyCode.A, guiController::moveLeft);
+
+        controlMap.put(KeyCode.RIGHT, guiController::moveRight);
+        controlMap.put(KeyCode.D, guiController::moveRight);
+
+        controlMap.put(KeyCode.UP, guiController::rotate);
+        controlMap.put(KeyCode.W, guiController::rotate);
+
+        controlMap.put(KeyCode.DOWN, guiController::moveDownUser);
+        controlMap.put(KeyCode.S, guiController::moveDownUser);
+
+        // Action Controls
+        controlMap.put(KeyCode.SPACE, guiController::hardDrop);
+        controlMap.put(KeyCode.TAB, guiController::holdBrick);
+        controlMap.put(KeyCode.SHIFT, guiController::holdBrick);
     }
 
     /**
@@ -32,37 +60,19 @@ public class GameInputHandler implements EventHandler<KeyEvent> {
      */
     @Override
     public void handle(KeyEvent keyEvent) {
-        // 1. Handle Pause Toggling (Always available)
+        // 1. Handle Pause Toggling (Global Priority)
         if (keyEvent.getCode() == KeyCode.ESCAPE) {
             guiController.togglePause();
             keyEvent.consume();
             return;
         }
 
-        // 2. Handle Game Controls (Only if playing)
+        // 2. Handle Game Controls
+        // Commands are only executed if the game is active (not paused, not game over)
         if (!guiController.isPaused() && !guiController.isGameOver()) {
-            if (keyEvent.getCode() == KeyCode.LEFT || keyEvent.getCode() == KeyCode.A) {
-                guiController.moveLeft();
-                keyEvent.consume();
-            }
-            else if (keyEvent.getCode() == KeyCode.RIGHT || keyEvent.getCode() == KeyCode.D) {
-                guiController.moveRight();
-                keyEvent.consume();
-            }
-            else if (keyEvent.getCode() == KeyCode.UP || keyEvent.getCode() == KeyCode.W) {
-                guiController.rotate();
-                keyEvent.consume();
-            }
-            else if (keyEvent.getCode() == KeyCode.DOWN || keyEvent.getCode() == KeyCode.S) {
-                guiController.moveDownUser(); // Differentiates User input from Gravity
-                keyEvent.consume();
-            }
-            else if (keyEvent.getCode() == KeyCode.SPACE) {
-                guiController.hardDrop();
-                keyEvent.consume();
-            }
-            else if (keyEvent.getCode() == KeyCode.TAB || keyEvent.getCode() == KeyCode.SHIFT) {
-                guiController.holdBrick();
+            Runnable action = controlMap.get(keyEvent.getCode());
+            if (action != null) {
+                action.run();
                 keyEvent.consume();
             }
         }
