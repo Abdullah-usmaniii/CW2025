@@ -85,7 +85,10 @@ encapsulation implemented within the project, and the challenges faced during re
 
 - **com.comp2042.view:** This package handles the Graphical User Interface (GUI). Classes here are responsible for drawing images, rectangles, and text to the screen. They should not know the rules of Tetris; they just display what they are told.
 
-  + **GuiController:** This is the JavaFX controller linked to your FXML files. It creates Tetris objects and handles animations. It is the main file responsible for main visual aspects of the game.
+  + **GuiController:** This Class is the main FXML Controller. It acts as the Coordinator class. It initializes the other three classes (GameRenderer, GameInputHandler, GameLoopManager), manages high-level UI states (Score, Game Over, Pause), and bridges the Input events to the Backend Logic.
+  + **GameRenderer:** his class is responsible solely for the visual representation of the game. It manages the JavaFX GridPane containers and the Rectangle objects that make up the board, the         current brick, and the ghost brick. It isolates the "View" details (colors, pixels, shapes) so the Controller doesn't need to manage them.
+  + **GameInputHandler:** This class handles user keyboard interactions. It listens for key events and translates them into semantic game actions (e.g., "Left Arrow" becomes "Move Left"). It delegates the execution of these actions to the GuiController.
+  + **GameLoopManager:** This class encapsulates the game loop logic using JavaFX Timeline. It manages the falling bricks logic and provides methods to start, stop, and pause the game clock.
   + **GameOverPanel and NotificationPanel:** Custom UI components that appear as overlays after the game ends.
   + **Main:** The entry point of JavaFX application. It sets up the stage and loads up the title screen which then allows the user to redirect to the game and other panels.
   +  **PauseMenuController, TitleScreenController, InstructionsController:** These classes are additional classes that are used to boost user-friendly interfaces and allow the user to access the new addtional features implemented such as the controlling the music volume.
@@ -94,6 +97,3 @@ encapsulation implemented within the project, and the challenges faced during re
 - **com.comp2042.RotationOperations:** This is an utility package extracted to handle complex matrix math related to rotation.
 
   + **BrickRotator:** Contains the math to rotate a 2D matrix tetris brick.
-
-
-## 3.2 Design patterns Implemented
