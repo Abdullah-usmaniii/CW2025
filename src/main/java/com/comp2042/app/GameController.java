@@ -6,6 +6,10 @@ import com.comp2042.events.InputEventListener;
 import com.comp2042.events.MoveEvent;
 import com.comp2042.view.GuiController;
 
+/**
+ * Controls the main game Logic and acts as the bridge between UI and game Logic.
+ * It handles input events and updates the game state accordingly.
+ */
 
 public class GameController implements InputEventListener {
 
@@ -13,6 +17,13 @@ public class GameController implements InputEventListener {
 
     private final GuiController viewGuiController;
 
+
+    /**
+     * Constructs a new GameController, initializes the board, sets up the event listener,
+     * and initializes the game view.
+     *
+     * @param c The GuiController instance responsible for rendering the game interface.
+     */
     public GameController(GuiController c) {
         viewGuiController = c;
         board.createNewBrick();
@@ -22,11 +33,25 @@ public class GameController implements InputEventListener {
         // bindScore moved to Main so the UI wiring happens there
     }
 
+    /**
+     * Retrieves the current Score object associated with the game board.
+     *
+     * @return The Score object containing the current score and high score.
+     */
+
     public com.comp2042.Logic.Score getScore() {
 
         return board.getScore();
     }
 
+    /**
+     * Handles the 'Down' event, which can be triggered by user input or the game loop (gravity).
+     * Moves the brick down if possible; otherwise, merges the brick to the background,
+     * checks for cleared rows, plays sound effects, and spawns a new brick.
+     *
+     * @param event The MoveEvent containing the source of the event (USER or THREAD).
+     * @return A DownData object containing information about cleared rows and the current view data.
+     */
     @Override
     public DownData onDownEvent(MoveEvent event) {
         boolean canMove = board.moveBrickDown();
@@ -63,24 +88,52 @@ public class GameController implements InputEventListener {
         return new DownData(clearRow, board.getViewData());
     }
 
+    /**
+     * Handles the 'Left' event triggered by user input.
+     * Attempts to move the current brick one unit to the left.
+     *
+     * @param event The MoveEvent associated with the left movement.
+     * @return The updated ViewData reflecting the new position of the brick.
+     */
     @Override
     public ViewData onLeftEvent(MoveEvent event) {
         board.moveBrickLeft();
         return board.getViewData();
     }
 
+    /**
+     * Handles the 'Right' event triggered by user input.
+     * Attempts to move the current brick one unit to the right.
+     *
+     * @param event The MoveEvent associated with the right movement.
+     * @return The updated ViewData reflecting the new position of the brick.
+     */
     @Override
     public ViewData onRightEvent(MoveEvent event) {
         board.moveBrickRight();
         return board.getViewData();
     }
 
+    /**
+     * Handles the 'Rotate' event triggered by user input.
+     * Attempts to rotate the current brick counter-clockwise.
+     *
+     * @param event The MoveEvent associated with the rotation.
+     * @return The updated ViewData reflecting the new orientation of the brick.
+     */
     @Override
     public ViewData onRotateEvent(MoveEvent event) {
         board.rotateLeftBrick();
         return board.getViewData();
     }
 
+    /**
+     * Handles the 'Hold' event triggered by user input.
+     * Swaps the current brick with the held brick or holds the current brick if the hold slot is empty.
+     *
+     * @param event The MoveEvent associated with the hold action.
+     * @return The updated ViewData, typically reflecting the swapped or new brick.
+     */
     @Override
     public ViewData onHoldEvent(MoveEvent event) {
         if (board.holdBrick()) {
@@ -93,6 +146,14 @@ public class GameController implements InputEventListener {
         return board.getViewData(); // Return current view data if hold failed
     }
 
+    /**
+     * Handles the 'Hard Drop' event triggered by user input.
+     * Instantly moves the brick to the lowest possible position, calculates the score
+     * based on distance dropped, merges the brick, and checks for cleared rows.
+     *
+     * @param event The MoveEvent associated with the hard drop action.
+     * @return A DownData object containing information about cleared rows and the current view data.
+     */
     @Override
     public DownData onHardDropEvent(MoveEvent event){
         // Initialize a counter for the points based on distance dropped
@@ -129,6 +190,11 @@ public class GameController implements InputEventListener {
         return new DownData(clearRow, board.getViewData());
     }
 
+    /**
+     * Resets the game state to start a new game.
+     * Clears the board, resets the score, and refreshes all UI components including
+     * the game background, next brick, and hold brick displays.
+     */
     @Override
     public void createNewGame() {
         board.newGame();

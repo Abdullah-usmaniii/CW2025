@@ -34,6 +34,15 @@ public class GameRenderer {
     private final GridPane nextBrickPanel;
     private final GridPane holdBrickPanel;
 
+    /**
+     * Constructs a GameRenderer with references to the JavaFX GridPanes used for drawing.
+     *
+     * @param gamePanel      The main grid for the static board background.
+     * @param brickPanel     The grid for the currently falling brick.
+     * @param ghostPanel     The grid for the ghost brick (shadow).
+     * @param nextBrickPanel The grid for displaying the upcoming bricks.
+     * @param holdBrickPanel The grid for displaying the held brick.
+     */
     public GameRenderer(GridPane gamePanel, GridPane brickPanel, GridPane ghostPanel,
                         GridPane nextBrickPanel, GridPane holdBrickPanel) {
         this.gamePanel = gamePanel;
@@ -43,6 +52,13 @@ public class GameRenderer {
         this.holdBrickPanel = holdBrickPanel;
     }
 
+    /**
+     * Initializes the entire game view based on the initial state.
+     * Clears previous nodes and draws the background, current brick, and side panels.
+     *
+     * @param boardMatrix The initial state of the static background grid.
+     * @param brick       The ViewData containing info about the current brick, next bricks, and held brick.
+     */
     public void initGameView(int[][] boardMatrix, ViewData brick) {
         // Clear old nodes
         gamePanel.getChildren().clear();
@@ -87,6 +103,12 @@ public class GameRenderer {
         initHoldBrick(brick.getHeldBrickData());
     }
 
+    /**
+     * Updates the layout coordinates of the brick and ghost panels.
+     * Moves the panes to match the logic's x/y coordinates.
+     *
+     * @param brick The current ViewData containing position information.
+     */
     private void updateBrickPosition(ViewData brick) {
         brickPanel.setLayoutX(gamePanel.getLayoutX() + brick.getxPosition() * brickPanel.getVgap() + brick.getxPosition() * BRICK_SIZE);
         brickPanel.setLayoutY(-42 + gamePanel.getLayoutY() + brick.getyPosition() * brickPanel.getHgap() + brick.getyPosition() * BRICK_SIZE);
@@ -95,6 +117,11 @@ public class GameRenderer {
         ghostPanel.setLayoutY(-42 + gamePanel.getLayoutY() + brick.getGhostYPosition() * ghostPanel.getHgap() + brick.getGhostYPosition() * BRICK_SIZE);
     }
 
+    /**
+     * Redraws the current falling brick and the ghost brick at their new positions.
+     *
+     * @param brick The ViewData object containing the current brick's shape and position.
+     */
     public void refreshBrick(ViewData brick) {
         updateBrickPosition(brick);
 
@@ -114,6 +141,11 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Redraws the static background grid (the pile of fallen bricks).
+     *
+     * @param board The 2D array representing the board state.
+     */
     public void refreshGameBackground(int[][] board) {
         for (int i = 2; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
@@ -128,6 +160,8 @@ public class GameRenderer {
     /**
      * Initializes the "Next Brick" panel with a LIST of incoming bricks.
      * Stacks them vertically.
+     *
+     * @param nextBricksData A list of 2D arrays representing the shapes of upcoming bricks.
      */
     public void initNextBrick(List<int[][]> nextBricksData) {
         nextBrickPanel.getChildren().clear();
@@ -158,6 +192,9 @@ public class GameRenderer {
 
     /**
      * Refreshes the "Next Brick" panel using the updated list of bricks.
+     * If the number of previews changes, it re-initializes the panel; otherwise, it updates existing rectangles.
+     *
+     * @param nextBricksData A list of 2D arrays representing the shapes of upcoming bricks.
      */
     public void refreshNextBrick(List<int[][]> nextBricksData) {
         // Ensure sizes match before updating
@@ -178,6 +215,11 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Initializes the "Hold Brick" panel with the specified brick shape.
+     *
+     * @param holdBrickData A 2D array representing the shape of the held brick.
+     */
     public void initHoldBrick(int[][] holdBrickData) {
         holdBrickPanel.getChildren().clear();
         holdBrickMatrix = new Rectangle[holdBrickData.length][holdBrickData[0].length];
@@ -193,6 +235,11 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Refreshes the "Hold Brick" panel to display a new held brick.
+     *
+     * @param holdBrickData A 2D array representing the shape of the held brick.
+     */
     public void refreshHoldBrick(int[][] holdBrickData) {
         if (holdBrickMatrix != null) {
             for (int i = 0; i < holdBrickData.length; i++) {
@@ -203,12 +250,25 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Helper method to apply color and styling to a single rectangle.
+     *
+     * @param color     The integer color code from the logic.
+     * @param rectangle The JavaFX Rectangle object to style.
+     */
     private void setRectangleData(int color, Rectangle rectangle) {
         rectangle.setFill(getFillColor(color));
         rectangle.setArcHeight(9);
         rectangle.setArcWidth(9);
     }
 
+    /**
+     * Determines the fill color for board cells.
+     * Returns a transparent color for empty cells (0) or the specific brick color otherwise.
+     *
+     * @param i The integer color code.
+     * @return The Paint object (Color) to fill the cell.
+     */
     private Paint getBoardFillColor(int i) {
         if (i == 0) {
             return Color.rgb(255, 255, 255, 0.1);
@@ -216,6 +276,12 @@ public class GameRenderer {
         return getFillColor(i);
     }
 
+    /**
+     * Maps an integer ID to a specific JavaFX Color.
+     *
+     * @param i The integer ID representing a brick type or color.
+     * @return The corresponding Paint/Color object.
+     */
     private Paint getFillColor(int i) {
         Paint returnPaint;
         switch (i) {

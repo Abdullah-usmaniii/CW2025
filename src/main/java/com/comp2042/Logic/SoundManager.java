@@ -5,9 +5,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.net.URL;
 
+
 public class SoundManager {
     private static SoundManager instance;
-    private MediaPlayer musicPlayer; // Keep MediaPlayer for long Background Music
+    private MediaPlayer musicPlayer;
     private double musicVolume = 0.5;
     private final double SFX_VOLUME = 0.7;
 
@@ -27,7 +28,6 @@ public class SoundManager {
                 musicPlayer.play();
             }
 
-            // Sound Effects (Change to AudioClip)
             // AudioClip pre-loads raw audio data into memory for instant playback
             URL placeResource = getClass().getClassLoader().getResource("place.mp3");
             if (placeResource != null) {
