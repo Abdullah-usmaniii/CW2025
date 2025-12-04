@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<?import com.comp2042.app.Constants?>
+
 
 <StackPane fx:id="rootPane" fx:controller="com.comp2042.view.GuiController"
            xmlns:fx="http://javafx.com/fxml"
@@ -29,6 +29,11 @@
                     <GameOverPanel fx:id="gameOverPanel"/>
                 </VBox>
             </Group>
+
+            <StackPane layoutX="-50" layoutY="-21" prefWidth="350" prefHeight="550" mouseTransparent="true">
+                <Text fx:id="countdownText" text="" styleClass="countdownText" visible="false"/>
+            </StackPane>
+
         </Pane>
 
         <Pane layoutX="250" layoutY="70" prefWidth="120" prefHeight="80">
@@ -36,6 +41,15 @@
             <Text text="0" fx:id="scoreValue" styleClass="scoreClass" layoutX="650" layoutY="170"/>
         </Pane>
 
+    <Pane layoutX="250" layoutY="200" prefWidth="150" prefHeight="160">
+        <VBox spacing="10">
+            <Label text="LEVEL" styleClass="scoreClass"/>
+            <Text text="1" fx:id="levelValue" styleClass="scoreClass"/>
+
+            <Label text="SPEED" styleClass="scoreClass"/>
+            <Text text="1.0x" fx:id="speedValue" styleClass="scoreClass"/>
+        </VBox>
+    </Pane>
 
     <Pane layoutX="488" layoutY="140" prefWidth="120" prefHeight="120">
         <Label text="HOLD (TAB)" styleClass="nextBrickLabel" layoutX="20" layoutY="5"/>

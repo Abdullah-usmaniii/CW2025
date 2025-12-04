@@ -13,14 +13,17 @@ public final class ClearRow {
     }
 
     public int getLinesRemoved() {
+
         return linesRemoved;
     }
 
     public int[][] getNewMatrix() {
+
         return MatrixOperations.copy(newMatrix);
     }
 
     public int getScoreBonus() {
+
         return scoreBonus;
     }
 }

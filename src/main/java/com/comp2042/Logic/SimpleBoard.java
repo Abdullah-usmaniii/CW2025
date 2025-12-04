@@ -6,8 +6,6 @@ import com.comp2042.Logic.bricks.RandomBrickGenerator;
 import com.comp2042.RotationOperations.BrickRotator;
 import com.comp2042.RotationOperations.NextShapeInfo;
 import com.comp2042.app.Constants;
-
-
 import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
