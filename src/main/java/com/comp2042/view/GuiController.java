@@ -44,7 +44,10 @@ public class GuiController implements Initializable {
     @FXML private GridPane holdBrick;
     @FXML private Group groupNotification;
     @FXML private Text scoreValue;
+    @FXML private Text levelValue;
+    @FXML private Text speedValue;
     @FXML private GameOverPanel gameOverPanel;
+    @FXML private Text countdownText;
 
     // Dependencies
     private GameRenderer renderer;
@@ -57,6 +60,7 @@ public class GuiController implements Initializable {
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
     private final IntegerProperty highScore = new SimpleIntegerProperty();
     private Parent pauseOverlay;
+    private final BooleanProperty isCountingDown = new SimpleBooleanProperty(false);
 
     /**
      * Initializes the controller after its root element has been completely processed.
@@ -118,10 +122,7 @@ public class GuiController implements Initializable {
     public void setEventListener(InputEventListener eventListener) {
         this.eventListener = eventListener;
 
-        // Initialize Input Handler
         this.inputHandler = new GameInputHandler(gamePanel, this);
-
-        // Initialize Game Loop Manager
         this.loopManager = new GameLoopManager(() ->
                 moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
         );
@@ -145,30 +146,38 @@ public class GuiController implements Initializable {
      * Called by the InputHandler when the move left key is pressed.
      */
     public void moveLeft() {
-        ViewData data = eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER));
-        renderer.refreshBrick(data);
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER));
+            renderer.refreshBrick(data);
+        }
     }
     /**
      * Initiates a move to the right.
      * Called by the InputHandler when the move right key is pressed.
      */
     public void moveRight() {
-        ViewData data = eventListener.onRightEvent(new MoveEvent(EventType.RIGHT, EventSource.USER));
-        renderer.refreshBrick(data);
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onRightEvent(new MoveEvent(EventType.RIGHT, EventSource.USER));
+            renderer.refreshBrick(data);
+        }
     }
     /**
      * Initiates a rotation of the brick.
      * Called by the InputHandler when the rotate key is pressed.
      */
     public void rotate() {
-        ViewData data = eventListener.onRotateEvent(new MoveEvent(EventType.ROTATE, EventSource.USER));
-        renderer.refreshBrick(data);
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onRotateEvent(new MoveEvent(EventType.ROTATE, EventSource.USER));
+            renderer.refreshBrick(data);
+        }
     }
     /**
      * Initiates a downward movement triggered by the user (soft drop).
      */
     public void moveDownUser() {
-        moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
+        if (!isCountingDown.get()) {
+            moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
+        }
     }
 
     /**
@@ -176,7 +185,7 @@ public class GuiController implements Initializable {
      * Called by the InputHandler when the hard drop key is pressed.
      */
     public void hardDrop() {
-        if (isPause.getValue() == Boolean.FALSE) {
+        if (isPause.getValue() == Boolean.FALSE && !isCountingDown.get()) {
             DownData downData = eventListener.onHardDropEvent(new MoveEvent(EventType.HARD_DROP, EventSource.USER));
             handleScoreNotification(downData);
             renderer.refreshBrick(downData.getViewData());
@@ -189,12 +198,12 @@ public class GuiController implements Initializable {
      * Swaps the current brick with the held brick and updates the UI accordingly.
      */
     public void holdBrick() {
-        ViewData data = eventListener.onHoldEvent(new MoveEvent(EventType.HOLD, EventSource.USER));
-        renderer.refreshBrick(data);
-        renderer.refreshHoldBrick(data.getHeldBrickData());
-
-        // CHANGED: Pass the LIST of next bricks
-        renderer.refreshNextBrick(data.getNextBrickData());
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onHoldEvent(new MoveEvent(EventType.HOLD, EventSource.USER));
+            renderer.refreshBrick(data);
+            renderer.refreshHoldBrick(data.getHeldBrickData());
+            renderer.refreshNextBrick(data.getNextBrickData());
+        }
     }
 
 
@@ -205,7 +214,7 @@ public class GuiController implements Initializable {
      * @param event The MoveEvent containing the source (User vs Thread).
      */
     private void moveDown(MoveEvent event) {
-        if (isPause.getValue() == Boolean.FALSE) {
+        if (isPause.getValue() == Boolean.FALSE && !isCountingDown.get()) {
             DownData downData = eventListener.onDownEvent(event);
             handleScoreNotification(downData);
             renderer.refreshBrick(downData.getViewData());
@@ -270,11 +279,16 @@ public class GuiController implements Initializable {
         return isGameOver.get();
     }
 
+    public boolean isCountingDown() {
+        return isCountingDown.get();
+    }
+
     /**
      * Toggles the pause state of the game.
      * Opens or closes the pause menu overlay accordingly.
      */
     public void togglePause() {
+        if (isCountingDown.get()) return;
         if (isPause.get()) {
             closePauseMenu();
         } else {
@@ -308,8 +322,16 @@ public class GuiController implements Initializable {
             rootPane.getChildren().remove(pauseOverlay);
             pauseOverlay = null;
         }
-        isPause.set(false);
+
         gamePanel.requestFocus();
+
+        // Start countdown before resuming game loop
+        startCountdown(() -> {
+            isPause.set(false); // Unpause only after countdown finishes
+            if (loopManager != null && !isGameOver.getValue() && !isPause.getValue()) {
+                loopManager.play();
+            }
+        });
     }
 
     /**
@@ -322,7 +344,70 @@ public class GuiController implements Initializable {
         gamePanel.requestFocus();
         isPause.setValue(Boolean.FALSE);
         isGameOver.setValue(Boolean.FALSE);
-        if (loopManager != null) loopManager.play();
+        startCountdown(() -> {
+            if (loopManager != null) loopManager.play();
+        });
+    }
+
+    public void setGameSpeed(double rate) {
+        if (loopManager != null) {
+            loopManager.setRate(rate);
+        }
+    }
+
+    public void updateLevel(int level) {
+        if (levelValue != null) {
+            levelValue.setText(String.valueOf(level));
+        }
+    }
+
+    public void updateSpeed(double speed) {
+        if (speedValue != null) {
+            speedValue.setText(speed + "x");
+        }
+    }
+
+    // Countdown Logic
+
+    private void startCountdown(Runnable onFinished) {
+        isCountingDown.set(true);
+        countdownText.setVisible(true);
+
+        SequentialTransition sequence = new SequentialTransition();
+
+        sequence.getChildren().addAll(
+                createPulseAnimation("3"),
+                createPulseAnimation("2"),
+                createPulseAnimation("1"),
+                createPulseAnimation("GO!")
+        );
+
+        sequence.setOnFinished(e -> {
+            countdownText.setVisible(false);
+            isCountingDown.set(false);
+            onFinished.run();
+        });
+
+        sequence.play();
+    }
+
+    private Transition createPulseAnimation(String text) {
+        PauseTransition setContent = new PauseTransition(Duration.ZERO);
+        setContent.setOnFinished(e -> countdownText.setText(text));
+
+        ScaleTransition scale = new ScaleTransition(Duration.millis(500), countdownText);
+        scale.setFromX(0.5);
+        scale.setFromY(0.5);
+        scale.setToX(1.5);
+        scale.setToY(1.5);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(500), countdownText);
+        fade.setFromValue(1.0);
+        fade.setToValue(0.0);
+
+        ParallelTransition parallel = new ParallelTransition(scale, fade);
+
+        return new SequentialTransition(setContent, parallel);
     }
 
     /**

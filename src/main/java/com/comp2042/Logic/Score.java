@@ -28,22 +28,27 @@ public final class Score {
     }
 
     public IntegerProperty scoreProperty() {
+
         return score;
     }
 
     public IntegerProperty highScoreProperty() {
+
         return highScore;
     }
 
     public void add(int i){
+
         score.setValue(score.getValue() + i);
     }
 
     public void reset() {
+
         score.setValue(0);
     }
 
     public int getHighScore() {
+
         return highScore.getValue();
     }
 }

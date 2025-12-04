@@ -12,6 +12,9 @@ public class Constants {
     public static final int BRICK_SIZE = 20;
     public static final double GAME_SPEED_MILLIS = 400;
     public static final int SCORE_PER_LINE_MULTIPLIER = 50;
+    public static final int SCORE_PER_LEVEL = 500;
+    public static final int MAX_LEVEL = 5;
+    public static final double SPEED_INCREASE_PER_LEVEL = 0.25;
 
     // Spawn Configuration
     public static final int SPAWN_X = 4;

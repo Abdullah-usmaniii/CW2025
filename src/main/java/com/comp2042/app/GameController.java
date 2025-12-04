@@ -14,9 +14,8 @@ import com.comp2042.view.GuiController;
 public class GameController implements InputEventListener {
 
     private Board board = new SimpleBoard(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT);
-
     private final GuiController viewGuiController;
-
+    private final LevelManager levelManager;
 
     /**
      * Constructs a new GameController, initializes the board, sets up the event listener,
@@ -27,12 +26,19 @@ public class GameController implements InputEventListener {
     public GameController(GuiController c) {
         viewGuiController = c;
         board.createNewBrick();
+        this.levelManager = new LevelManager(
+                board.getScore(),
+                viewGuiController::updateLevel,     // Callback for Level
+                this::handleSpeedChange             // Callback for Speed
+        );
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
-        // Initialize next brick display
-        // bindScore moved to Main so the UI wiring happens there
     }
 
+    private void handleSpeedChange(Double rate) {
+        viewGuiController.setGameSpeed(rate);
+        viewGuiController.updateSpeed(rate);
+    }
     /**
      * Retrieves the current Score object associated with the game board.
      *
@@ -40,7 +46,6 @@ public class GameController implements InputEventListener {
      */
 
     public com.comp2042.Logic.Score getScore() {
-
         return board.getScore();
     }
 
@@ -156,14 +161,11 @@ public class GameController implements InputEventListener {
      */
     @Override
     public DownData onHardDropEvent(MoveEvent event){
-        // Initialize a counter for the points based on distance dropped
         int points = 0;
 
-        // Loop moves the brick down until it hits something
         while(board.moveBrickDown()){
-            points++; // Count 1 point for every successful move down
+            points++;
         }
-        // Add the total drop distance points to the score
         board.getScore().add(points);
 
         board.mergeBrickToBackground();
@@ -198,8 +200,8 @@ public class GameController implements InputEventListener {
     @Override
     public void createNewGame() {
         board.newGame();
+        levelManager.reset();
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
-        // Refresh next brick display for new game
         viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
         viewGuiController.refreshHoldBrick(board.getViewData().getHeldBrickData());
     }

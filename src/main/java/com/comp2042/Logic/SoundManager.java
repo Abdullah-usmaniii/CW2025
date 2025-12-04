@@ -60,6 +60,7 @@ public class SoundManager {
     }
 
     public double getVolume() {
+
         return musicVolume;
     }
 

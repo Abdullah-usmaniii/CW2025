@@ -61,4 +61,13 @@ public class GameLoopManager {
             timeLine.stop();
         }
     }
+    /**
+     * Sets the speed multiplier for the game loop.
+     * @param rate 1.0 is normal speed, 2.0 is double speed.
+     */
+    public void setRate(double rate) {
+        if (timeLine != null) {
+            timeLine.setRate(rate);
+        }
+    }
 }
