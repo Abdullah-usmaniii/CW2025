@@ -3,7 +3,7 @@ package com.comp2042.Logic;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import java.util.function.Consumer;
-
+import com.comp2042.app.Constants;
 /**
  * Manages game levels based on the player's score.
  * Updates the game speed as levels progress.
@@ -13,9 +13,6 @@ public class LevelManager implements ChangeListener<Number> {
     private int currentLevel = 1;
     private final Consumer<Integer> levelUpdateCallback;
     private final Consumer<Double> speedUpdateCallback;
-    private static final int SCORE_PER_LEVEL = 500;
-    private static final int MAX_LEVEL = 5;
-    private static final double SPEED_INCREMENT = 0.25;
 
     /**
      * @param score The Score object to observe.
@@ -39,11 +36,11 @@ public class LevelManager implements ChangeListener<Number> {
 
     private void calculateLevel(int score) {
         // Level 1: 0-499, Level 2: 500-999, etc.
-        int newLevel = (score / SCORE_PER_LEVEL) + 1;
+        int newLevel = (score / Constants.SCORE_PER_LEVEL) + 1;
 
         // Cap at Max Level
-        if (newLevel > MAX_LEVEL) {
-            newLevel = MAX_LEVEL;
+        if (newLevel > Constants.MAX_LEVEL) {
+            newLevel = Constants.MAX_LEVEL;
         }
 
         if (newLevel != currentLevel) {
@@ -54,7 +51,7 @@ public class LevelManager implements ChangeListener<Number> {
 
     private void updateLevelAndSpeed() {
         // Base rate is 1.0. Increase by 0.25 per level.
-        double rate = 1.0 + ((currentLevel - 1) * SPEED_INCREMENT);
+        double rate = 1.0 + ((currentLevel - 1) * Constants.SPEED_INCREASE_PER_LEVEL);
 
         if (levelUpdateCallback != null) {
             levelUpdateCallback.accept(currentLevel);
