@@ -146,30 +146,38 @@ public class GuiController implements Initializable {
      * Called by the InputHandler when the move left key is pressed.
      */
     public void moveLeft() {
-        ViewData data = eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER));
-        renderer.refreshBrick(data);
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onLeftEvent(new MoveEvent(EventType.LEFT, EventSource.USER));
+            renderer.refreshBrick(data);
+        }
     }
     /**
      * Initiates a move to the right.
      * Called by the InputHandler when the move right key is pressed.
      */
     public void moveRight() {
-        ViewData data = eventListener.onRightEvent(new MoveEvent(EventType.RIGHT, EventSource.USER));
-        renderer.refreshBrick(data);
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onRightEvent(new MoveEvent(EventType.RIGHT, EventSource.USER));
+            renderer.refreshBrick(data);
+        }
     }
     /**
      * Initiates a rotation of the brick.
      * Called by the InputHandler when the rotate key is pressed.
      */
     public void rotate() {
-        ViewData data = eventListener.onRotateEvent(new MoveEvent(EventType.ROTATE, EventSource.USER));
-        renderer.refreshBrick(data);
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onRotateEvent(new MoveEvent(EventType.ROTATE, EventSource.USER));
+            renderer.refreshBrick(data);
+        }
     }
     /**
      * Initiates a downward movement triggered by the user (soft drop).
      */
     public void moveDownUser() {
-        moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
+        if (!isCountingDown.get()) {
+            moveDown(new MoveEvent(EventType.DOWN, EventSource.USER));
+        }
     }
 
     /**
@@ -177,7 +185,7 @@ public class GuiController implements Initializable {
      * Called by the InputHandler when the hard drop key is pressed.
      */
     public void hardDrop() {
-        if (isPause.getValue() == Boolean.FALSE) {
+        if (isPause.getValue() == Boolean.FALSE && !isCountingDown.get()) {
             DownData downData = eventListener.onHardDropEvent(new MoveEvent(EventType.HARD_DROP, EventSource.USER));
             handleScoreNotification(downData);
             renderer.refreshBrick(downData.getViewData());
@@ -190,10 +198,12 @@ public class GuiController implements Initializable {
      * Swaps the current brick with the held brick and updates the UI accordingly.
      */
     public void holdBrick() {
-        ViewData data = eventListener.onHoldEvent(new MoveEvent(EventType.HOLD, EventSource.USER));
-        renderer.refreshBrick(data);
-        renderer.refreshHoldBrick(data.getHeldBrickData());
-        renderer.refreshNextBrick(data.getNextBrickData());
+        if (!isCountingDown.get()) {
+            ViewData data = eventListener.onHoldEvent(new MoveEvent(EventType.HOLD, EventSource.USER));
+            renderer.refreshBrick(data);
+            renderer.refreshHoldBrick(data.getHeldBrickData());
+            renderer.refreshNextBrick(data.getNextBrickData());
+        }
     }
 
 
@@ -204,7 +214,7 @@ public class GuiController implements Initializable {
      * @param event The MoveEvent containing the source (User vs Thread).
      */
     private void moveDown(MoveEvent event) {
-        if (isPause.getValue() == Boolean.FALSE) {
+        if (isPause.getValue() == Boolean.FALSE && !isCountingDown.get()) {
             DownData downData = eventListener.onDownEvent(event);
             handleScoreNotification(downData);
             renderer.refreshBrick(downData.getViewData());
@@ -278,6 +288,7 @@ public class GuiController implements Initializable {
      * Opens or closes the pause menu overlay accordingly.
      */
     public void togglePause() {
+        if (isCountingDown.get()) return;
         if (isPause.get()) {
             closePauseMenu();
         } else {
@@ -311,9 +322,12 @@ public class GuiController implements Initializable {
             rootPane.getChildren().remove(pauseOverlay);
             pauseOverlay = null;
         }
-        isPause.set(false);
+
         gamePanel.requestFocus();
+
+        // Start countdown before resuming game loop
         startCountdown(() -> {
+            isPause.set(false); // Unpause only after countdown finishes
             if (loopManager != null && !isGameOver.getValue() && !isPause.getValue()) {
                 loopManager.play();
             }
