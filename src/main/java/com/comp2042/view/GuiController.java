@@ -23,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
@@ -101,6 +102,19 @@ public class GuiController implements Initializable {
         gameOverPanel.setExitAction(e -> {
             Platform.exit();
             System.exit(0);
+        });
+
+        gameOverPanel.setMainMenuAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_TITLE_SCREEN));
+                Parent root = loader.load();
+
+                // Get current stage and swap scene
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                stage.getScene().setRoot(root);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
 
         // 3. Setup Pause Logic
@@ -416,6 +430,7 @@ public class GuiController implements Initializable {
      */
     public void gameOver() {
         if (loopManager != null) loopManager.stop();
+        gameOverPanel.setHighScore(highScore.get());
         gameOverPanel.setVisible(true);
         gameOverPanel.setOpacity(0);
         gameOverPanel.setTranslateY(30);

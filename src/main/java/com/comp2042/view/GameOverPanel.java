@@ -4,67 +4,87 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 /**
  * A custom UI component representing the "Game Over" screen.
- * It displays a "Game Over" message and provides buttons to restart the game or exit.
+ * Displays the result, high score to beat, and navigation options.
  */
 public class GameOverPanel extends BorderPane {
 
     private final Button newGameButton;
+    private final Button mainMenuButton;
     private final Button exitButton;
+    private final Text highScoreText;
 
-    /**
-     * Constructs the Game Over panel.
-     * Initializes the layout, applies styles, and sets up the "Replay" and "Exit" buttons.
-     */
     public GameOverPanel() {
-        // Game Over Label
-        final Label gameOverLabel = new Label("GAME OVER");
-        gameOverLabel.getStyleClass().add("gameOverStyle");
+        // 1. Style the Panel Container (Semi-transparent dark rounded box)
+        this.setStyle(
+                "-fx-background-color: rgba(0, 0, 0, 0.9);" +
+                        "-fx-background-radius: 20;" +
+                        "-fx-border-color: white;" +
+                        "-fx-border-width: 2;" +
+                        "-fx-border-radius: 20;" +
+                        "-fx-padding: 30;"
+        );
+        // Set a preferred size so it doesn't shrink too much
+        this.setMinWidth(300);
+        this.setMinHeight(350);
 
-        // New Game Button
-        newGameButton = new Button("Replay");
+        // 2. Game Over Title
+        Text gameOverLabel = new Text("GAME OVER");
+        gameOverLabel.getStyleClass().add("gameOverTitle");
+
+        // 3. High Score Text
+        highScoreText = new Text("High Score: 0");
+        highScoreText.getStyleClass().add("highScoreText");
+
+        // 4. Buttons
+        newGameButton = new Button("REPLAY");
         newGameButton.getStyleClass().add("greenButton");
+        newGameButton.setPrefWidth(200);
 
-        // Exit Button
-        exitButton = new Button("Exit");
+        mainMenuButton = new Button("MAIN MENU");
+        mainMenuButton.getStyleClass().add("ipad-dark-grey");
+        mainMenuButton.setPrefWidth(200);
+
+        exitButton = new Button("EXIT");
         exitButton.getStyleClass().add("redButton");
+        exitButton.setPrefWidth(200);
 
-        // Layout for Buttons (Horizontal)
-        HBox buttonBox = new HBox(15);
-        buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.getChildren().addAll(newGameButton, exitButton);
+        // 5. Layout (Vertical Stack)
+        VBox layout = new VBox(20);
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(
+                gameOverLabel,
+                highScoreText,
+                newGameButton,
+                mainMenuButton,
+                exitButton
+        );
 
-        // Main Layout (Label on top, Buttons below)
-        VBox content = new VBox(20);
-        content.setAlignment(Pos.CENTER);
-        content.getChildren().addAll(gameOverLabel, buttonBox);
-
-        setCenter(content);
+        setCenter(layout);
     }
 
     /**
-     * Sets the action to be triggered when the "New Game" (Replay) button is clicked.
-     *
-     * @param event The event handler to execute for starting a new game.
+     * Updates the text to show the high score the player needs to beat.
+     * @param score The current high score.
      */
-    public void setNewGameAction(EventHandler<ActionEvent> event) {
+    public void setHighScore(int score) {
+        highScoreText.setText("HIGH SCORE: " + score);
+    }
 
+    public void setNewGameAction(EventHandler<ActionEvent> event) {
         newGameButton.setOnAction(event);
     }
 
-    /**
-     * Sets the action to be triggered when the "Exit" button is clicked.
-     *
-     * @param event The event handler to execute for exiting the game.
-     */
-    public void setExitAction(EventHandler<ActionEvent> event) {
+    public void setMainMenuAction(EventHandler<ActionEvent> event) {
+        mainMenuButton.setOnAction(event);
+    }
 
+    public void setExitAction(EventHandler<ActionEvent> event) {
         exitButton.setOnAction(event);
     }
 }

@@ -16,20 +16,24 @@ public class GameController implements InputEventListener {
     private Board board = new SimpleBoard(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT);
     private final GuiController viewGuiController;
     private final LevelManager levelManager;
+    private final GameMode gameMode;
 
     /**
-     * Constructs a new GameController, initializes the board, sets up the event listener,
-     * and initializes the game view.
+     * Constructs a new GameController with the specified Game Mode.
+     * Initializes the board, event listener, and game view.
      *
-     * @param c The GuiController instance responsible for rendering the game interface.
+     * @param c    The GuiController instance responsible for rendering.
+     * @param mode The selected GameMode (CLASSIC or DIG).
      */
-    public GameController(GuiController c) {
-        viewGuiController = c;
+    public GameController(GuiController c, GameMode mode) {
+        this.viewGuiController = c;
+        this.gameMode = mode;
+
         board.createNewBrick();
         this.levelManager = new LevelManager(
                 board.getScore(),
-                viewGuiController::updateLevel,     // Callback for Level
-                this::handleSpeedChange             // Callback for Speed
+                viewGuiController::updateLevel,
+                this::handleSpeedChange
         );
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
@@ -68,22 +72,28 @@ public class GameController implements InputEventListener {
             }
         } else {
             board.mergeBrickToBackground();
-
             clearRow = board.clearRows();
 
-            // Prioritize Clear sound over Place sound
+            // --- DIG MODE LOGIC ---
+            // If in Dig Mode and lines were cleared, add garbage to challenge the user
+            if (gameMode == GameMode.DIG && clearRow.getLinesRemoved() > 0) {
+                if (board instanceof SimpleBoard) {
+                    // Add one row of garbage per clear event to maintain challenge
+                    ((SimpleBoard) board).injectGarbageRow();
+                }
+            }
+            // -----------------------
+
             if (clearRow.getLinesRemoved() > 0) {
                 SoundManager.getInstance().playClearSound();
                 board.getScore().add(clearRow.getScoreBonus());
             } else {
-                // Only plays place sound if no lines were cleared
                 SoundManager.getInstance().playPlaceSound();
             }
 
             if (board.createNewBrick()) {
                 viewGuiController.gameOver();
             } else {
-                // Refresh the next brick display when a new brick is created
                 viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
             }
 
@@ -160,25 +170,27 @@ public class GameController implements InputEventListener {
      * @return A DownData object containing information about cleared rows and the current view data.
      */
     @Override
-    public DownData onHardDropEvent(MoveEvent event){
+    public DownData onHardDropEvent(MoveEvent event) {
         int points = 0;
-
         while(board.moveBrickDown()){
             points++;
         }
         board.getScore().add(points);
-
         board.mergeBrickToBackground();
-
         ClearRow clearRow = board.clearRows();
 
-        boolean rowsCleared = clearRow.getLinesRemoved() > 0;
-        if (rowsCleared){
-            // Trigger CLEAR sound effect when rows are removed
+        // --- DIG MODE LOGIC ---
+        if (gameMode == GameMode.DIG && clearRow.getLinesRemoved() > 0) {
+            if (board instanceof SimpleBoard) {
+                ((SimpleBoard) board).injectGarbageRow();
+            }
+        }
+        // -----------------------
+
+        if (clearRow.getLinesRemoved() > 0){
             SoundManager.getInstance().playClearSound();
             board.getScore().add(clearRow.getScoreBonus());
         } else {
-            // Trigger PLACE sound effect ONLY IF no rows were cleared
             SoundManager.getInstance().playPlaceSound();
         }
 
