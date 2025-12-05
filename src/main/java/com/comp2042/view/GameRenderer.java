@@ -294,6 +294,8 @@ public class GameRenderer {
             case 5: returnPaint = Color.RED; break;
             case 6: returnPaint = Color.BEIGE; break;
             case 7: returnPaint = Color.BURLYWOOD; break;
+            case 8: returnPaint = Color.GREY; break; // Dig Mode Garbage
+            case 9: returnPaint = Color.BLACK; break; // [New] Bomb Brick
             default: returnPaint = Color.WHITE; break;
         }
         return returnPaint;

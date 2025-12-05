@@ -1,24 +1,22 @@
-/**
- * src/main/java/com/comp2042/Logic/SimpleBoard.java
- */
 package com.comp2042.Logic;
 
 import com.comp2042.Logic.bricks.Brick;
 import com.comp2042.Logic.bricks.BrickGenerator;
 import com.comp2042.Logic.bricks.RandomBrickGenerator;
+import com.comp2042.Logic.bricks.BombBrick;
 import com.comp2042.RotationOperations.BrickRotator;
 import com.comp2042.RotationOperations.NextShapeInfo;
 import com.comp2042.app.Constants;
 
 import java.awt.*;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Represents the game board logic, storing the state of the grid and handling brick movements.
+ * Represents the game board logic, handling grid state, brick movement, and game mode specifics.
  * Implements the {@link Board} interface.
  */
 public class SimpleBoard implements Board {
@@ -34,12 +32,14 @@ public class SimpleBoard implements Board {
     private boolean canHold = true;
     private final Deque<Brick> nextBricks = new ArrayDeque<>();
 
+    // -- Bomb Mode Fields --
+    private final BombManager bombManager;
+    private boolean lastBrickWasBomb = false;
+
     /**
-     * Constructs a SimpleBoard with specified dimensions.
-     * Initializes the score, brick generator, and pre-fills the next brick queue.
-     *
-     * @param width  The number of rows in the board (vertical height in logical matrix).
-     * @param height The number of columns in the board (horizontal width).
+     * Constructs a SimpleBoard and initializes game components.
+     * @param width  Number of rows (vertical size).
+     * @param height Number of columns (horizontal size).
      */
     public SimpleBoard(int width, int height) {
         this.width = width;
@@ -48,40 +48,34 @@ public class SimpleBoard implements Board {
         brickGenerator = new RandomBrickGenerator();
         brickRotator = new BrickRotator();
         score = new Score();
+        this.bombManager = new BombManager();
 
-        // Initialize the queue with 3 bricks
         for (int i = 0; i < 3; i++) {
             nextBricks.add(brickGenerator.getBrick());
         }
     }
 
     /**
-     * Injects a row of garbage blocks at the bottom of the board.
-     * Shifts all existing blocks up by one row. The top row is lost (potentially causing game over logic elsewhere).
-     * The new bottom row will have at least one empty space to ensure it is clearable.
+     * Gets the BombManager instance.
+     * @return The BombManager.
+     */
+    public BombManager getBombManager() {
+        return bombManager;
+    }
+
+    /**
+     * Injects a row of garbage blocks at the bottom for Dig mode.
      */
     public void injectGarbageRow() {
-        // 1. Shift all rows up by 1
-        // loop from 0 to second-to-last row
         for (int i = 0; i < width - 1; i++) {
             System.arraycopy(currentGameMatrix[i + 1], 0, currentGameMatrix[i], 0, height);
         }
-
-        // 2. Generate new bottom row
         int[] garbageRow = new int[height];
         int holeIndex = ThreadLocalRandom.current().nextInt(height);
-
         for (int j = 0; j < height; j++) {
-            if (j == holeIndex) {
-                garbageRow[j] = 0; // The hole
-            } else {
-                // Random color block (1-7), avoiding 0
-                // 8 is a good "garbage" color (grey) if supported by renderer, otherwise random 1-7
-                garbageRow[j] = ThreadLocalRandom.current().nextInt(1, 8);
-            }
+            if (j == holeIndex) garbageRow[j] = 0;
+            else garbageRow[j] = ThreadLocalRandom.current().nextInt(1, 8);
         }
-
-        // 3. Assign to the last row
         currentGameMatrix[width - 1] = garbageRow;
     }
 
@@ -91,12 +85,9 @@ public class SimpleBoard implements Board {
         Point p = new Point(currentOffset);
         p.translate(0, 1);
         boolean conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
-        if (conflict) {
-            return false;
-        } else {
-            currentOffset = p;
-            return true;
-        }
+        if (conflict) return false;
+        currentOffset = p;
+        return true;
     }
 
     @Override
@@ -105,12 +96,9 @@ public class SimpleBoard implements Board {
         Point p = new Point(currentOffset);
         p.translate(-1, 0);
         boolean conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
-        if (conflict) {
-            return false;
-        } else {
-            currentOffset = p;
-            return true;
-        }
+        if (conflict) return false;
+        currentOffset = p;
+        return true;
     }
 
     @Override
@@ -119,12 +107,9 @@ public class SimpleBoard implements Board {
         Point p = new Point(currentOffset);
         p.translate(1, 0);
         boolean conflict = MatrixOperations.intersect(currentMatrix, brickRotator.getCurrentShape(), (int) p.getX(), (int) p.getY());
-        if (conflict) {
-            return false;
-        } else {
-            currentOffset = p;
-            return true;
-        }
+        if (conflict) return false;
+        currentOffset = p;
+        return true;
     }
 
     @Override
@@ -132,16 +117,24 @@ public class SimpleBoard implements Board {
         int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
         NextShapeInfo nextShape = brickRotator.getNextShape();
         boolean conflict = MatrixOperations.intersect(currentMatrix, nextShape.getShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
-        if (conflict) {
-            return false;
-        } else {
-            brickRotator.setCurrentShape(nextShape.getPosition());
-            return true;
-        }
+        if (conflict) return false;
+        brickRotator.setCurrentShape(nextShape.getPosition());
+        return true;
     }
 
     @Override
     public boolean createNewBrick() {
+        // [Logic] Check if a bomb needs to be spawned
+        if (bombManager.isActive()) {
+            Brick currentBrick = new BombBrick();
+            bombManager.deactivate();
+
+            brickRotator.setBrick(currentBrick);
+            currentOffset = new Point(Constants.SPAWN_X, Constants.SPAWN_Y);
+            canHold = true;
+            return MatrixOperations.intersect(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
+        }
+
         Brick currentBrick = nextBricks.poll();
         nextBricks.add(brickGenerator.getBrick());
         brickRotator.setBrick(currentBrick);
@@ -152,9 +145,7 @@ public class SimpleBoard implements Board {
 
     @Override
     public boolean holdBrick() {
-        if (!canHold) {
-            return false;
-        }
+        if (!canHold) return false;
 
         Brick currentBrick = brickRotator.getBrick();
 
@@ -168,9 +159,7 @@ public class SimpleBoard implements Board {
             int[][] nextShape = incomingBrick.getShapeMatrix().get(0);
             boolean hasConflict = MatrixOperations.intersect(currentGameMatrix, nextShape, (int) currentOffset.getX(), (int) currentOffset.getY());
 
-            if (hasConflict) {
-                return false;
-            }
+            if (hasConflict) return false;
             heldBrick = currentBrick;
             brickRotator.setBrick(incomingBrick);
             canHold = false;
@@ -185,13 +174,7 @@ public class SimpleBoard implements Board {
 
     @Override
     public ViewData getViewData() {
-        int[][] heldData;
-        if(heldBrick != null){
-            heldData = heldBrick.getShapeMatrix().get(0);
-        } else{
-            heldData = new int[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
-        }
-
+        int[][] heldData = (heldBrick != null) ? heldBrick.getShapeMatrix().get(0) : new int[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
         List<int[][]> nextShapes = new ArrayList<>();
         for (Brick b : nextBricks) {
             nextShapes.add(b.getShapeMatrix().get(0));
@@ -211,7 +194,6 @@ public class SimpleBoard implements Board {
         int[][] shape = brickRotator.getCurrentShape();
         int x = (int) currentOffset.getX();
         int y = (int) currentOffset.getY();
-
         while (!MatrixOperations.intersect(currentMatrix, shape, x, y + 1)) {
             y++;
         }
@@ -220,11 +202,48 @@ public class SimpleBoard implements Board {
 
     @Override
     public void mergeBrickToBackground() {
+        // [Logic] Check if the merged brick is a Bomb to set flag
+        if (brickRotator.getBrick() instanceof BombBrick) {
+            lastBrickWasBomb = true;
+        } else {
+            lastBrickWasBomb = false;
+        }
         currentGameMatrix = MatrixOperations.merge(currentGameMatrix, brickRotator.getCurrentShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
     }
 
     @Override
     public ClearRow clearRows() {
+        if (lastBrickWasBomb) {
+            // [MODIFIED] Bomb Clearing Logic
+            int rowToClear = (int) currentOffset.getY();
+
+            // Validate bounds (width is num rows in this array structure)
+            if (rowToClear >= 0 && rowToClear < width) {
+                int[][] newMatrix = new int[width][height];
+
+                // Shift all rows above the bomb down by 1
+                for (int r = rowToClear; r > 0; r--) {
+                    newMatrix[r] = currentGameMatrix[r - 1];
+                }
+
+                // Keep rows below the bomb
+                for (int r = rowToClear + 1; r < width; r++) {
+                    newMatrix[r] = currentGameMatrix[r];
+                }
+
+                // Clear top row
+                newMatrix[0] = new int[height];
+
+                // [CRITICAL FIX] Update the game state!
+                currentGameMatrix = newMatrix;
+
+                lastBrickWasBomb = false;
+
+                // Return result (1 line cleared, score bonus can be 0 or standard)
+                return new ClearRow(1, newMatrix, 50);
+            }
+        }
+
         ClearRow clearRow = MatrixOperations.checkRemoving(currentGameMatrix);
         currentGameMatrix = clearRow.getNewMatrix();
         return clearRow;
@@ -241,6 +260,8 @@ public class SimpleBoard implements Board {
         score.reset();
         heldBrick = null;
         canHold = true;
+        bombManager.reset();
+        lastBrickWasBomb = false;
         nextBricks.clear();
         for (int i = 0; i < 3; i++) {
             nextBricks.add(brickGenerator.getBrick());

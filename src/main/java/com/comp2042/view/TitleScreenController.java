@@ -1,6 +1,3 @@
-/**
- * src/main/java/com/comp2042/view/TitleScreenController.java
- */
 package com.comp2042.view;
 
 import com.comp2042.Logic.SoundManager;
@@ -30,7 +27,7 @@ public class TitleScreenController {
     @FXML private Slider volumeSlider;
 
     private Parent instructionsOverlay;
-    private Parent modeSelectionOverlay; // Added to hold the new window
+    private Parent modeSelectionOverlay;
 
     @FXML
     public void initialize() {
@@ -47,21 +44,14 @@ public class TitleScreenController {
         }
     }
 
-    /**
-     * Handles the "Start Game" button click.
-     * Displays the Game Mode Selection window instead of launching immediately.
-     */
     @FXML
     public void handleStartGame(ActionEvent event) {
         if (modeSelectionOverlay == null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/GameModeSelection.fxml"));
                 modeSelectionOverlay = loader.load();
-
-                // Inject this controller into the selection controller
                 GameModeSelectionController controller = loader.getController();
                 controller.setTitleScreenController(this);
-
                 rootPane.getChildren().add(modeSelectionOverlay);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -74,11 +64,9 @@ public class TitleScreenController {
     }
 
     /**
-     * Launches the game with the specific Game Mode.
-     * Called by the GameModeSelectionController.
-     *
+     * Launches the game with the specific Game Mode
      * @param event The event source (button click) used to find the stage.
-     * @param mode  The selected game mode (CLASSIC or DIG).
+     * @param mode  The selected game mode (CLASSIC, DIG, or BOMB).
      */
     public void launchGame(ActionEvent event, GameMode mode) {
         try {
@@ -88,10 +76,12 @@ public class TitleScreenController {
             Stage stage = (Stage) rootPane.getScene().getWindow();
             Scene currentScene = stage.getScene();
 
-            // Initialize logic with selected mode
             GuiController controller = loader.getController();
 
-            // Pass the mode to GameController
+            // [FIX] Initialize the UI for the specific mode FIRST
+            controller.setGameMode(mode);
+
+            // Then initialize the Game Logic which might need to access that UI
             com.comp2042.app.GameController gameLogic = new com.comp2042.app.GameController(controller, mode);
 
             controller.bindScore(gameLogic.getScore().scoreProperty());
@@ -105,9 +95,6 @@ public class TitleScreenController {
         }
     }
 
-    /**
-     * Closes the Game Mode Selection overlay.
-     */
     public void closeModeSelection() {
         if (rootPane != null && modeSelectionOverlay != null) {
             rootPane.getChildren().remove(modeSelectionOverlay);

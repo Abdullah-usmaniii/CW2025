@@ -5,6 +5,8 @@ import com.comp2042.events.EventSource;
 import com.comp2042.events.InputEventListener;
 import com.comp2042.events.MoveEvent;
 import com.comp2042.view.GuiController;
+import com.comp2042.view.BombPanel;
+import javafx.scene.control.Button;
 
 /**
  * Controls the main game Logic and acts as the bridge between UI and game Logic.
@@ -35,6 +37,36 @@ public class GameController implements InputEventListener {
                 viewGuiController::updateLevel,
                 this::handleSpeedChange
         );
+
+        if (mode == GameMode.BOMB) {
+            Button btn = viewGuiController.getBombButton();
+            if (btn != null && board instanceof SimpleBoard) {
+                // Focus handling: ensure clicking button doesn't steal focus permanently
+                btn.setFocusTraversable(false);
+
+                btn.setOnAction(e -> {
+                    SimpleBoard sb = (SimpleBoard) board;
+                    boolean success = sb.getBombManager().tryActivate();
+                    if (success) {
+                        // 1. Update UI Button State
+                        viewGuiController.updateBombButtonState(sb.getBombManager().getInventory());
+
+                        // 2. Show Notification
+                        viewGuiController.showNotification(sb.getBombManager().getInventory() + " BOMBS REMAINING");
+
+                        // 3. Action: Force spawn new brick (which will be a bomb due to active state)
+                        sb.createNewBrick();
+
+                        // 4. Update visuals immediately
+                        viewGuiController.refreshBrick(sb.getViewData());
+                        viewGuiController.refreshNextBrick(sb.getViewData().getNextBrickData());
+
+                        // 5. Return focus to game panel so keyboard works
+                        viewGuiController.returnFocusToGame();                    }
+                });
+            }
+        }
+
         viewGuiController.setEventListener(this);
         viewGuiController.initGameView(board.getBoardMatrix(), board.getViewData());
     }
@@ -213,6 +245,10 @@ public class GameController implements InputEventListener {
     public void createNewGame() {
         board.newGame();
         levelManager.reset();
+
+        if (gameMode == GameMode.BOMB && viewGuiController.getBombButton() != null && board instanceof SimpleBoard) {
+            viewGuiController.updateBombButtonState(((SimpleBoard)board).getBombManager().getInventory());
+        }
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
         viewGuiController.refreshNextBrick(board.getViewData().getNextBrickData());
         viewGuiController.refreshHoldBrick(board.getViewData().getHeldBrickData());

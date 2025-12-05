@@ -14,13 +14,16 @@
         <Text text="SELECT MODE" style="-fx-font-size: 60px; -fx-fill: white; -fx-font-family: 'Let\'s go Digital';"/>
 
         <Button text="CLASSIC" onAction="#handleClassic"
-                prefWidth="220" styleClass="greenButton"/>
+                prefWidth="250" styleClass="greenButton"/>
 
         <Button text="DIG" onAction="#handleDig"
-                prefWidth="220" styleClass="greenButton"/>
+                prefWidth="250" styleClass="greenButton"/>
+
+        <Button text="BOMB SQUAD" onAction="#handleBomb"
+                prefWidth="250" styleClass="greenButton"/>
 
         <Button text="BACK" onAction="#handleBack"
-                prefWidth="220" styleClass="ipad-dark-grey"/>
+                prefWidth="250" styleClass="ipad-dark-grey"/>
     </VBox>
 
     <stylesheets>

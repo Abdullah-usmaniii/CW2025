@@ -6,23 +6,24 @@ import javafx.fxml.FXML;
 
 /**
  * Controller for the Game Mode Selection screen.
- * Allows the user to choose between "Classic" and "Dig" modes.
+ * Handles user interaction for choosing between Classic, Dig, and Bomb Squad modes.
  */
 public class GameModeSelectionController {
 
     private TitleScreenController titleScreenController;
 
     /**
-     * Injects the TitleScreenController to allow callbacks for launching the game.
-     * @param titleScreenController The main title screen controller.
+     * Injects the main title screen controller to allow navigation callbacks.
+     *
+     * @param titleScreenController The parent controller.
      */
     public void setTitleScreenController(TitleScreenController titleScreenController) {
         this.titleScreenController = titleScreenController;
     }
 
     /**
-     * Handles the "Classic Mode" button click.
-     * Launches the standard game.
+     * Launches the Classic game mode.
+     * @param event The button click event.
      */
     @FXML
     public void handleClassic(ActionEvent event) {
@@ -32,8 +33,8 @@ public class GameModeSelectionController {
     }
 
     /**
-     * Handles the "Dig Mode" button click.
-     * Launches the game with Dig rules (garbage generation).
+     * Launches the Dig game mode.
+     * @param event The button click event.
      */
     @FXML
     public void handleDig(ActionEvent event) {
@@ -43,8 +44,19 @@ public class GameModeSelectionController {
     }
 
     /**
-     * Handles the "Back" button click.
-     * Closes this overlay and returns to the main title menu.
+     * Launches the Bomb Squad game mode.
+     * @param event The button click event.
+     */
+    @FXML
+    public void handleBomb(ActionEvent event) {
+        if (titleScreenController != null) {
+            titleScreenController.launchGame(event, GameMode.BOMB);
+        }
+    }
+
+    /**
+     * Returns to the main title screen.
+     * @param event The button click event.
      */
     @FXML
     public void handleBack(ActionEvent event) {
