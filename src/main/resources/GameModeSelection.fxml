@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+
+<StackPane style="-fx-background-color: rgba(0, 0, 0, 0.85);"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.comp2042.view.GameModeSelectionController">
+
+    <VBox alignment="CENTER" spacing="25">
+        <Text text="SELECT MODE" style="-fx-font-size: 60px; -fx-fill: white; -fx-font-family: 'Let\'s go Digital';"/>
+
+        <Button text="CLASSIC" onAction="#handleClassic"
+                prefWidth="250" styleClass="greenButton"/>
+
+        <Button text="DIG" onAction="#handleDig"
+                prefWidth="250" styleClass="greenButton"/>
+
+        <Button text="BOMB SQUAD" onAction="#handleBomb"
+                prefWidth="250" styleClass="greenButton"/>
+
+        <Button text="BACK" onAction="#handleBack"
+                prefWidth="250" styleClass="ipad-dark-grey"/>
+    </VBox>
+
+    <stylesheets>
+        <URL value="@window_style.css"/>
+    </stylesheets>
+</StackPane>

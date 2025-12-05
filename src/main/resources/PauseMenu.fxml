@@ -11,7 +11,6 @@
            fx:controller="com.comp2042.view.PauseMenuController">
 
     <VBox alignment="CENTER" spacing="20">
-        <Text text="PAUSED" style="-fx-font-size: 60px; -fx-fill: white; -fx-font-family: 'Let\'s go Digital';"/>
 
         <Button text="RESUME" onAction="#handleResume"
                 prefWidth="220" styleClass="ipad-dark-grey"/>

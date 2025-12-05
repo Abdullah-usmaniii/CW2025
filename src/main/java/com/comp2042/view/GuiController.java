@@ -18,16 +18,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.effect.Reflection;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import com.comp2042.app.GameMode;
 
 /**
  * The main coordinator class for the UI.
@@ -49,11 +53,14 @@ public class GuiController implements Initializable {
     @FXML private GameOverPanel gameOverPanel;
     @FXML private Text countdownText;
 
+
     // Dependencies
     private GameRenderer renderer;
     private GameInputHandler inputHandler;
     private GameLoopManager loopManager;
     private InputEventListener eventListener;
+    private Button bombButton;
+    private GameMode currentMode;
 
 
     private final BooleanProperty isPause = new SimpleBooleanProperty();
@@ -103,6 +110,19 @@ public class GuiController implements Initializable {
             System.exit(0);
         });
 
+        gameOverPanel.setMainMenuAction(e -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_TITLE_SCREEN));
+                Parent root = loader.load();
+
+                // Get current stage and swap scene
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                stage.getScene().setRoot(root);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
         // 3. Setup Pause Logic
         isPause.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
@@ -111,6 +131,75 @@ public class GuiController implements Initializable {
                 if (loopManager != null && !isGameOver.getValue()) loopManager.play();
             }
         });
+    }
+
+    /**
+     * Sets the game mode and initializes mode-specific UI elements.
+     * Should be called immediately after loading the controller.
+     * @param mode The selected GameMode.
+     */
+    public void setGameMode(GameMode mode) {
+        this.currentMode = mode;
+        if (mode == GameMode.BOMB) {
+            initBombButton();
+        }
+    }
+    /**
+     * Creates and adds the Bomb Button to the UI dynamically.
+     */
+    private void initBombButton() {
+        bombButton = new Button("BOOM");
+        bombButton.getStyleClass().add("ipad-dark-grey");
+        bombButton.setPrefWidth(120);
+        bombButton.setPrefHeight(60);
+        // Larger font for effect
+        bombButton.setStyle("-fx-font-size: 24px; -fx-text-fill: red; -fx-font-family: 'Let\\'s go Digital';");
+
+        bombButton.setLayoutX(470);
+        bombButton.setLayoutY(550);
+
+        if (rootPane.getChildren().get(0) instanceof Pane) {
+            ((Pane) rootPane.getChildren().get(0)).getChildren().add(bombButton);
+        }
+    }
+
+    /**
+     * Initializes the Bomb Panel if the current game mode is BOMB.
+     */
+    public Button getBombButton() {
+        return bombButton;
+    }
+
+    /**
+     * Displays a temporary notification message on screen.
+     * @param text The message to display.
+     */
+    public void showNotification(String text) {
+        NotificationPanel panel = new NotificationPanel(text);
+        groupNotification.getChildren().add(panel);
+        panel.showScore(groupNotification.getChildren());
+    }
+    /**
+     * Updates the bomb button state.
+     * @param count Remaining bombs.
+     */
+    public void updateBombButtonState(int count) {
+        if (bombButton != null) {
+            if (count <= 0) {
+                bombButton.setDisable(true);
+                bombButton.setText("EMPTY");
+            } else {
+                bombButton.setDisable(false);
+                bombButton.setText("BOOM");
+            }
+        }
+    }
+
+    /**
+     * Returns focus to the game panel so keyboard controls work immediately.
+     */
+    public void returnFocusToGame() {
+        gamePanel.requestFocus();
     }
 
     /**
@@ -259,6 +348,14 @@ public class GuiController implements Initializable {
      */
     public void refreshHoldBrick(int[][] holdData) {
         renderer.refreshHoldBrick(holdData);
+    }
+    /**
+     * Refreshes the display of the currently falling brick.
+     * Delegates the drawing to the GameRenderer.
+     * @param data The view data containing the brick's position and shape.
+     */
+    public void refreshBrick(ViewData data) {
+        renderer.refreshBrick(data);
     }
 
     /**
@@ -416,6 +513,7 @@ public class GuiController implements Initializable {
      */
     public void gameOver() {
         if (loopManager != null) loopManager.stop();
+        gameOverPanel.setHighScore(highScore.get());
         gameOverPanel.setVisible(true);
         gameOverPanel.setOpacity(0);
         gameOverPanel.setTranslateY(30);

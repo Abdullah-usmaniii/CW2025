@@ -2,6 +2,7 @@ package com.comp2042.view;
 
 import com.comp2042.Logic.SoundManager;
 import com.comp2042.app.Constants;
+import com.comp2042.app.GameMode;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,20 +18,17 @@ import java.io.IOException;
 
 /**
  * Controller for the main Title Screen.
- * Manages navigation to the game, settings, instructions, and exiting the application.
+ * Manages navigation to the game, settings, instructions, and game mode selection.
  */
 public class TitleScreenController {
 
-    @FXML private StackPane rootPane; // Reference to the root stack pane
+    @FXML private StackPane rootPane;
     @FXML private VBox settingsPanel;
     @FXML private Slider volumeSlider;
 
     private Parent instructionsOverlay;
+    private Parent modeSelectionOverlay;
 
-    /**
-     * Initializes the controller.
-     * Sets up the volume slider with the current volume from SoundManager.
-     */
     @FXML
     public void initialize() {
         SoundManager soundManager = SoundManager.getInstance();
@@ -44,33 +42,52 @@ public class TitleScreenController {
             settingsPanel.setVisible(false);
             settingsPanel.setManaged(false);
         }
+    }
 
+    @FXML
+    public void handleStartGame(ActionEvent event) {
+        if (modeSelectionOverlay == null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/GameModeSelection.fxml"));
+                modeSelectionOverlay = loader.load();
+                GameModeSelectionController controller = loader.getController();
+                controller.setTitleScreenController(this);
+                rootPane.getChildren().add(modeSelectionOverlay);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (!rootPane.getChildren().contains(modeSelectionOverlay)) {
+                rootPane.getChildren().add(modeSelectionOverlay);
+            }
+        }
     }
 
     /**
-     * Handles the "Start Game" button click.
-     * Loads the Game Layout FXML, initializes the game logic, and transitions the scene.
-     *
-     * @param event The ActionEvent triggered by the button.
+     * Launches the game with the specific Game Mode
+     * @param event The event source (button click) used to find the stage.
+     * @param mode  The selected game mode (CLASSIC, DIG, or BOMB).
      */
-    @FXML
-    public void handleStartGame(ActionEvent event) {
+    public void launchGame(ActionEvent event, GameMode mode) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_GAME_LAYOUT));
             Parent root = loader.load();
 
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) rootPane.getScene().getWindow();
             Scene currentScene = stage.getScene();
 
-            // Setup controller logic
             GuiController controller = loader.getController();
-            com.comp2042.app.GameController gameLogic = new com.comp2042.app.GameController(controller);
+
+            // [FIX] Initialize the UI for the specific mode FIRST
+            controller.setGameMode(mode);
+
+            // Then initialize the Game Logic which might need to access that UI
+            com.comp2042.app.GameController gameLogic = new com.comp2042.app.GameController(controller, mode);
+
             controller.bindScore(gameLogic.getScore().scoreProperty());
             controller.bindHighScore(gameLogic.getScore().highScoreProperty());
 
             currentScene.setRoot(root);
-
             controller.newGame();
 
         } catch (IOException e) {
@@ -78,12 +95,12 @@ public class TitleScreenController {
         }
     }
 
-    /**
-     * Handles the "Settings" button click.
-     * Toggles the visibility of the settings panel (e.g., volume control).
-     *
-     * @param event The ActionEvent triggered by the button.
-     */
+    public void closeModeSelection() {
+        if (rootPane != null && modeSelectionOverlay != null) {
+            rootPane.getChildren().remove(modeSelectionOverlay);
+        }
+    }
+
     @FXML
     public void handleSettings(ActionEvent event) {
         boolean isVisible = settingsPanel.isVisible();
@@ -91,50 +108,31 @@ public class TitleScreenController {
         settingsPanel.setManaged(!isVisible);
     }
 
-    /**
-     * Handles the "Instructions" button click.
-     * Loads and displays the instructions overlay.
-     *
-     * @param event The ActionEvent triggered by the button.
-     */
     @FXML
     public void handleInstructions(ActionEvent event) {
         if (instructionsOverlay == null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(Constants.FXML_INSTRUCTIONS));
                 instructionsOverlay = loader.load();
-
-                // Pass this controller to the instructions controller so it can call closeInstructions()
                 InstructionsController controller = loader.getController();
                 controller.setTitleScreenController(this);
-
                 rootPane.getChildren().add(instructionsOverlay);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            // If already loaded, just add it back if it was removed
             if (!rootPane.getChildren().contains(instructionsOverlay)) {
                 rootPane.getChildren().add(instructionsOverlay);
             }
         }
     }
 
-    /**
-     * Handles the "Exit" button click.
-     * Terminates the application.
-     *
-     * @param event The ActionEvent triggered by the button.
-     */
     @FXML
     public void handleExit(ActionEvent event) {
         Platform.exit();
         System.exit(0);
     }
 
-    /**
-     * Closes the instructions overlay by removing it from the root pane.
-     */
     public void closeInstructions() {
         if (rootPane != null && instructionsOverlay != null) {
             rootPane.getChildren().remove(instructionsOverlay);
