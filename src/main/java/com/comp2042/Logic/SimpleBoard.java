@@ -214,6 +214,7 @@ public class SimpleBoard implements Board {
     @Override
     public ClearRow clearRows() {
         if (lastBrickWasBomb) {
+
             int rowToClear = (int) currentOffset.getY();
 
             // Validate bounds (width is num rows in this array structure)
