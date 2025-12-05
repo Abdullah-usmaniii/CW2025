@@ -214,7 +214,6 @@ public class SimpleBoard implements Board {
     @Override
     public ClearRow clearRows() {
         if (lastBrickWasBomb) {
-            // [MODIFIED] Bomb Clearing Logic
             int rowToClear = (int) currentOffset.getY();
 
             // Validate bounds (width is num rows in this array structure)
@@ -230,16 +229,9 @@ public class SimpleBoard implements Board {
                 for (int r = rowToClear + 1; r < width; r++) {
                     newMatrix[r] = currentGameMatrix[r];
                 }
-
-                // Clear top row
                 newMatrix[0] = new int[height];
-
-                // [CRITICAL FIX] Update the game state!
                 currentGameMatrix = newMatrix;
-
                 lastBrickWasBomb = false;
-
-                // Return result (1 line cleared, score bonus can be 0 or standard)
                 return new ClearRow(1, newMatrix, 50);
             }
         }

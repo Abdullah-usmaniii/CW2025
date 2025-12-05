@@ -155,8 +155,8 @@ public class GuiController implements Initializable {
         // Larger font for effect
         bombButton.setStyle("-fx-font-size: 24px; -fx-text-fill: red; -fx-font-family: 'Let\\'s go Digital';");
 
-        bombButton.setLayoutX(50);
-        bombButton.setLayoutY(450);
+        bombButton.setLayoutX(470);
+        bombButton.setLayoutY(550);
 
         if (rootPane.getChildren().get(0) instanceof Pane) {
             ((Pane) rootPane.getChildren().get(0)).getChildren().add(bombButton);
