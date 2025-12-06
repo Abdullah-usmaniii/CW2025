@@ -15,8 +15,9 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
- * A temporary floating panel used to display score bonuses (e.g., "+100").
+ * A temporary floating panel used to display score bonuses .
  * It animates (fades and moves up) before removing itself from the view.
+ * @author Abdullah Usmani
  */
 public class NotificationPanel extends BorderPane {
 

@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
@@ -19,6 +18,8 @@ import java.io.IOException;
 /**
  * Controller for the main Title Screen.
  * Manages navigation to the game, settings, instructions, and game mode selection.
+ *
+ * @author Abdullah Usmani
  */
 public class TitleScreenController {
 
@@ -29,6 +30,10 @@ public class TitleScreenController {
     private Parent instructionsOverlay;
     private Parent modeSelectionOverlay;
 
+    /**
+     * Initializes the controller class.
+     * Sets up the volume slider with the current sound manager volume and hides the settings panel by default.
+     */
     @FXML
     public void initialize() {
         SoundManager soundManager = SoundManager.getInstance();
@@ -44,6 +49,12 @@ public class TitleScreenController {
         }
     }
 
+    /**
+     * Handles the "Start Game" button action.
+     * Loads and displays the Game Mode selection overlay.
+     *
+     * @param event The ActionEvent triggered by clicking the start button.
+     */
     @FXML
     public void handleStartGame(ActionEvent event) {
         if (modeSelectionOverlay == null) {
@@ -64,7 +75,9 @@ public class TitleScreenController {
     }
 
     /**
-     * Launches the game with the specific Game Mode
+     * Launches the game with the specific Game Mode.
+     * Loads the game layout, initializes the game controller with the selected mode, and switches the scene.
+     *
      * @param event The event source (button click) used to find the stage.
      * @param mode  The selected game mode (CLASSIC, DIG, or BOMB).
      */
@@ -78,10 +91,8 @@ public class TitleScreenController {
 
             GuiController controller = loader.getController();
 
-            // [FIX] Initialize the UI for the specific mode FIRST
             controller.setGameMode(mode);
 
-            // Then initialize the Game Logic which might need to access that UI
             com.comp2042.app.GameController gameLogic = new com.comp2042.app.GameController(controller, mode);
 
             controller.bindScore(gameLogic.getScore().scoreProperty());
@@ -95,12 +106,22 @@ public class TitleScreenController {
         }
     }
 
+    /**
+     * Closes the Game Mode selection overlay.
+     * Removes the overlay from the root pane.
+     */
     public void closeModeSelection() {
         if (rootPane != null && modeSelectionOverlay != null) {
             rootPane.getChildren().remove(modeSelectionOverlay);
         }
     }
 
+    /**
+     * Handles the "Settings" button action.
+     * Toggles the visibility of the settings panel.
+     *
+     * @param event The ActionEvent triggered by clicking the settings button.
+     */
     @FXML
     public void handleSettings(ActionEvent event) {
         boolean isVisible = settingsPanel.isVisible();
@@ -108,6 +129,12 @@ public class TitleScreenController {
         settingsPanel.setManaged(!isVisible);
     }
 
+    /**
+     * Handles the "Instructions" button action.
+     * Loads and displays the Instructions overlay.
+     *
+     * @param event The ActionEvent triggered by clicking the instructions button.
+     */
     @FXML
     public void handleInstructions(ActionEvent event) {
         if (instructionsOverlay == null) {
@@ -127,12 +154,22 @@ public class TitleScreenController {
         }
     }
 
+    /**
+     * Handles the "Exit" button action.
+     * Closes the JavaFX application and terminates the JVM.
+     *
+     * @param event The ActionEvent triggered by clicking the exit button.
+     */
     @FXML
     public void handleExit(ActionEvent event) {
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     * Closes the Instructions overlay.
+     * Removes the overlay from the root pane.
+     */
     public void closeInstructions() {
         if (rootPane != null && instructionsOverlay != null) {
             rootPane.getChildren().remove(instructionsOverlay);

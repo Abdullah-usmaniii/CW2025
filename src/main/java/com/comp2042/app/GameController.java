@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 /**
  * Controls the main game Logic and acts as the bridge between UI and game Logic.
  * It handles input events and updates the game state accordingly.
+ * @author Abdullah Usmani
  */
 
 public class GameController implements InputEventListener {
@@ -48,20 +49,20 @@ public class GameController implements InputEventListener {
                     SimpleBoard sb = (SimpleBoard) board;
                     boolean success = sb.getBombManager().tryActivate();
                     if (success) {
-                        // 1. Update UI Button State
+                        // Update UI Button State
                         viewGuiController.updateBombButtonState(sb.getBombManager().getInventory());
 
-                        // 2. Show Notification
+                        // Show Notification
                         viewGuiController.showNotification(sb.getBombManager().getInventory() + " BOMBS REMAINING");
 
-                        // 3. Action: Force spawn new brick (which will be a bomb due to active state)
+                        // Action: Force spawn new brick (which will be a bomb due to active state)
                         sb.createNewBrick();
 
-                        // 4. Update visuals immediately
+                        // Update visuals immediately
                         viewGuiController.refreshBrick(sb.getViewData());
                         viewGuiController.refreshNextBrick(sb.getViewData().getNextBrickData());
 
-                        // 5. Return focus to game panel so keyboard works
+                        // Return focus to game panel so keyboard works
                         viewGuiController.returnFocusToGame();                    }
                 });
             }
@@ -75,12 +76,12 @@ public class GameController implements InputEventListener {
         viewGuiController.setGameSpeed(rate);
         viewGuiController.updateSpeed(rate);
     }
+
     /**
      * Retrieves the current Score object associated with the game board.
      *
      * @return The Score object containing the current score and high score.
      */
-
     public com.comp2042.Logic.Score getScore() {
         return board.getScore();
     }
@@ -106,7 +107,7 @@ public class GameController implements InputEventListener {
             board.mergeBrickToBackground();
             clearRow = board.clearRows();
 
-            // --- DIG MODE LOGIC ---
+            // DIG MODE LOGIC
             // If in Dig Mode and lines were cleared, add garbage to challenge the user
             if (gameMode == GameMode.DIG && clearRow.getLinesRemoved() > 0) {
                 if (board instanceof SimpleBoard) {
@@ -114,8 +115,6 @@ public class GameController implements InputEventListener {
                     ((SimpleBoard) board).injectGarbageRow();
                 }
             }
-            // -----------------------
-
             if (clearRow.getLinesRemoved() > 0) {
                 SoundManager.getInstance().playClearSound();
                 board.getScore().add(clearRow.getScoreBonus());
@@ -211,14 +210,12 @@ public class GameController implements InputEventListener {
         board.mergeBrickToBackground();
         ClearRow clearRow = board.clearRows();
 
-        // --- DIG MODE LOGIC ---
+        // DIG MODE LOGIC
         if (gameMode == GameMode.DIG && clearRow.getLinesRemoved() > 0) {
             if (board instanceof SimpleBoard) {
                 ((SimpleBoard) board).injectGarbageRow();
             }
         }
-        // -----------------------
-
         if (clearRow.getLinesRemoved() > 0){
             SoundManager.getInstance().playClearSound();
             board.getScore().add(clearRow.getScoreBonus());

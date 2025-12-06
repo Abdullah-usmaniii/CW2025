@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 /**
  * Controller for the Game Mode Selection screen.
  * Handles user interaction for choosing between Classic, Dig, and Bomb Squad modes.
+ * @author Abdullah Usmani
  */
 public class GameModeSelectionController {
 

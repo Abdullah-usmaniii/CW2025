@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 /**
  * Controller for the Instructions screen.
  * Handles user interactions within the instructions view, primarily navigating back to the title screen.
+ * @author Abdullah Usmani
  */
 public class InstructionsController {
 

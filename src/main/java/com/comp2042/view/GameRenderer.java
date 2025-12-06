@@ -11,8 +11,8 @@ import java.util.List;
 
 /**
  * Handles all graphical rendering for the Tetris game.
- * Responsible for drawing the board, the falling brick, the ghost brick,
- * and the next/hold brick previews.
+ * Responsible for drawing the board, the falling brick, the ghost brick, and the next/hold brick previews.
+ * @author Abdullah Usmani
  */
 public class GameRenderer {
 
@@ -23,7 +23,6 @@ public class GameRenderer {
     private Rectangle[][] rectangles;
     private Rectangle[][] ghostRectangles;
 
-    // CHANGED: Now a List to support multiple next brick previews
     private final List<Rectangle[][]> nextBrickMatrices = new ArrayList<>();
 
     private Rectangle[][] holdBrickMatrix;
@@ -68,7 +67,7 @@ public class GameRenderer {
         nextBrickPanel.getChildren().clear();
         holdBrickPanel.getChildren().clear();
 
-        // 1. Initialize Board Background
+        // Initialize Board Background
         displayMatrix = new Rectangle[boardMatrix.length][boardMatrix[0].length];
         for (int i = 2; i < boardMatrix.length; i++) {
             for (int j = 0; j < boardMatrix[i].length; j++) {
@@ -79,7 +78,7 @@ public class GameRenderer {
             }
         }
 
-        // 2. Initialize Current Brick and Ghost
+        // Initialize Current Brick and Ghost
         rectangles = new Rectangle[brick.getBrickData().length][brick.getBrickData()[0].length];
         ghostRectangles = new Rectangle[brick.getBrickData().length][brick.getBrickData()[0].length];
 
@@ -99,7 +98,7 @@ public class GameRenderer {
 
         updateBrickPosition(brick);
 
-        // 3. Initialize Side Panels (Pass the LIST here)
+        // Initialize Side Panels
         initNextBrick(brick.getNextBrickData());
         initHoldBrick(brick.getHeldBrickData());
     }
@@ -181,12 +180,10 @@ public class GameRenderer {
                     rectangle.setArcHeight(9);
                     rectangle.setArcWidth(9);
                     matrix[i][j] = rectangle;
-                    // Add to grid with vertical offset for stacking
                     nextBrickPanel.add(rectangle, j, i + verticalOffset);
                 }
             }
             nextBrickMatrices.add(matrix);
-            // Offset for the next brick (height + padding)
             verticalOffset += 5;
         }
     }

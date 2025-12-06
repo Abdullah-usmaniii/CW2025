@@ -11,7 +11,6 @@
            fx:controller="com.comp2042.view.GameModeSelectionController">
 
     <VBox alignment="CENTER" spacing="25">
-        <Text text="SELECT MODE" style="-fx-font-size: 60px; -fx-fill: white; -fx-font-family: 'Let\'s go Digital';"/>
 
         <Button text="CLASSIC" onAction="#handleClassic"
                 prefWidth="250" styleClass="greenButton"/>

@@ -36,6 +36,7 @@ import com.comp2042.app.GameMode;
 /**
  * The main coordinator class for the UI.
  * Acts as the FXML Controller and manages the interaction between Input, Rendering, Game Loop, and Game Logic.
+ * @author Abdullah Usmani
  */
 public class GuiController implements Initializable {
 
@@ -61,8 +62,6 @@ public class GuiController implements Initializable {
     private InputEventListener eventListener;
     private Button bombButton;
     private GameMode currentMode;
-
-
     private final BooleanProperty isPause = new SimpleBooleanProperty();
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
     private final IntegerProperty highScore = new SimpleIntegerProperty();
@@ -80,7 +79,6 @@ public class GuiController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Load fonts/effects
         try {
-            // Ensure this resource exists or wrap in try-catch to prevent crash
             String fontPath = getClass().getClassLoader().getResource(Constants.RESOURCE_FONT_DIGITAL).toExternalForm();
             Font.loadFont(fontPath, 38);
         } catch (Exception e) {
@@ -92,14 +90,11 @@ public class GuiController implements Initializable {
         reflection.setTopOpacity(0.9);
         reflection.setTopOffset(-12);
 
-        // 1. Initialize Renderer
+        // Initialize Renderer
         this.renderer = new GameRenderer(gamePanel, brickPanel, ghostPanel, nextBrick, holdBrick);
 
-        // Focus management
         gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
-
-        // 2. Setup Game Over Panel
         gameOverPanel.setVisible(false);
         gameOverPanel.setNewGameAction(e -> {
             newGame();
@@ -123,7 +118,7 @@ public class GuiController implements Initializable {
             }
         });
 
-        // 3. Setup Pause Logic
+        // Setup Pause Logic
         isPause.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 if (loopManager != null) loopManager.pause();
@@ -424,7 +419,7 @@ public class GuiController implements Initializable {
 
         // Start countdown before resuming game loop
         startCountdown(() -> {
-            isPause.set(false); // Unpause only after countdown finishes
+            isPause.set(false);
             if (loopManager != null && !isGameOver.getValue() && !isPause.getValue()) {
                 loopManager.play();
             }
@@ -465,7 +460,6 @@ public class GuiController implements Initializable {
     }
 
     // Countdown Logic
-
     private void startCountdown(Runnable onFinished) {
         isCountingDown.set(true);
         countdownText.setVisible(true);

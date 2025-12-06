@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 /**
  * A custom UI component representing the "Game Over" screen.
  * Displays the result, high score to beat, and navigation options.
+ * @author Abdullah Usmani
  */
 public class GameOverPanel extends BorderPane {
 
@@ -20,7 +21,7 @@ public class GameOverPanel extends BorderPane {
     private final Text highScoreText;
 
     public GameOverPanel() {
-        // 1. Style the Panel Container (Semi-transparent dark rounded box)
+        // Style the Panel Container
         this.setStyle(
                 "-fx-background-color: rgba(0, 0, 0, 0.9);" +
                         "-fx-background-radius: 20;" +
@@ -29,19 +30,18 @@ public class GameOverPanel extends BorderPane {
                         "-fx-border-radius: 20;" +
                         "-fx-padding: 30;"
         );
-        // Set a preferred size so it doesn't shrink too much
         this.setMinWidth(300);
         this.setMinHeight(350);
 
-        // 2. Game Over Title
+        // Game Over Title
         Text gameOverLabel = new Text("GAME OVER");
         gameOverLabel.getStyleClass().add("gameOverTitle");
 
-        // 3. High Score Text
+        // High Score Text
         highScoreText = new Text("High Score: 0");
         highScoreText.getStyleClass().add("highScoreText");
 
-        // 4. Buttons
+        // Buttons
         newGameButton = new Button("REPLAY");
         newGameButton.getStyleClass().add("greenButton");
         newGameButton.setPrefWidth(200);
@@ -54,7 +54,7 @@ public class GameOverPanel extends BorderPane {
         exitButton.getStyleClass().add("redButton");
         exitButton.setPrefWidth(200);
 
-        // 5. Layout (Vertical Stack)
+        // Layout
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(
@@ -73,18 +73,22 @@ public class GameOverPanel extends BorderPane {
      * @param score The current high score.
      */
     public void setHighScore(int score) {
+
         highScoreText.setText("HIGH SCORE: " + score);
     }
 
     public void setNewGameAction(EventHandler<ActionEvent> event) {
+
         newGameButton.setOnAction(event);
     }
 
     public void setMainMenuAction(EventHandler<ActionEvent> event) {
+
         mainMenuButton.setOnAction(event);
     }
 
     public void setExitAction(EventHandler<ActionEvent> event) {
+
         exitButton.setOnAction(event);
     }
 }

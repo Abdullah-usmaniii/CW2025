@@ -4,7 +4,11 @@ import com.comp2042.Logic.MatrixOperations;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Represents the S Brick in Tetris.
+ *
+ * @author Abdullah Usmani
+ */
 public final class SBrick implements Brick {
 
     // Flyweight: Static storage shared by all SBrick instances

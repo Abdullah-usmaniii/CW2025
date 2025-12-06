@@ -4,7 +4,11 @@ import com.comp2042.Logic.MatrixOperations;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Represents the J Brick.
+ *
+ * @author Abdullah Usmani
+ */
 public final class JBrick implements Brick {
 
     // Flyweight: Static storage shared by all JBrick instances

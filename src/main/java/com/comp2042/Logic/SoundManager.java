@@ -6,7 +6,12 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.net.URL;
 
-
+/**
+ * Manages the audio system for the game, including background music and sound effects.
+ * Implements the Singleton pattern to ensure a single audio controller exists.
+ *
+ * @author Abdullah Usmani
+ */
 public class SoundManager {
     private static SoundManager instance;
     private MediaPlayer musicPlayer;
@@ -17,6 +22,10 @@ public class SoundManager {
     private AudioClip placeSound;
     private AudioClip clearSound;
 
+    /**
+     * Private constructor to prevent direct instantiation.
+     * Initializes the background music player and loads sound effects into memory.
+     */
     private SoundManager() {
         try {
             // Background Music (Keep as MediaPlayer)
@@ -45,6 +54,12 @@ public class SoundManager {
         }
     }
 
+    /**
+     * Retrieves the single instance of the SoundManager.
+     * Creates the instance if it does not already exist.
+     *
+     * @return The singleton SoundManager instance.
+     */
     public static SoundManager getInstance() {
         if (instance == null) {
             instance = new SoundManager();
@@ -52,6 +67,11 @@ public class SoundManager {
         return instance;
     }
 
+    /**
+     * Sets the volume for the background music.
+     *
+     * @param value The new volume level (0.0 to 1.0).
+     */
     public void setVolume(double value) {
         this.musicVolume = value;
         if (musicPlayer != null) {
@@ -59,18 +79,29 @@ public class SoundManager {
         }
     }
 
+    /**
+     * Gets the current volume level of the background music.
+     *
+     * @return The volume level (0.0 to 1.0).
+     */
     public double getVolume() {
-
         return musicVolume;
     }
 
-    // Updated methods to use AudioClip
+    /**
+     * Plays the sound effect for placing a brick.
+     * Uses the predefined SFX volume constant.
+     */
     public void playPlaceSound() {
         if (placeSound != null) {
-            placeSound.play(SFX_VOLUME); // Play with specific volume, no need to dispose
+            placeSound.play(SFX_VOLUME);
         }
     }
 
+    /**
+     * Plays the sound effect for clearing rows.
+     * Uses the predefined SFX volume constant.
+     */
     public void playClearSound() {
         if (clearSound != null) {
             clearSound.play(SFX_VOLUME);

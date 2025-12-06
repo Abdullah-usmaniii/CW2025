@@ -9,8 +9,9 @@ import java.util.List;
  * <p>
  * Updated to a 4x4 matrix to ensure the GameRenderer clears the previous brick's
  * visual artifacts correctly. The bomb is located at [0][0] (Color ID 9),
- * and the rest is padding (Color ID 0).
+ * and the rest is padding.
  * </p>
+ * @author Abdullah Usmani
  */
 public final class BombBrick implements Brick {
 

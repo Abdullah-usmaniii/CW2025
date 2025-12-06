@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * Handles keyboard input for the game.
  * Uses the Command Pattern to map inputs to actions.
+ * @author Abdullah Usmani
  */
 public class GameInputHandler implements EventHandler<KeyEvent> {
 
@@ -42,15 +43,15 @@ public class GameInputHandler implements EventHandler<KeyEvent> {
 
     @Override
     public void handle(KeyEvent keyEvent) {
-        // 1. Handle Pause Toggling (Global Priority)
+        // Handle Pause Toggling
         if (keyEvent.getCode() == KeyCode.ESCAPE) {
             guiController.togglePause();
             keyEvent.consume();
             return;
         }
 
-        // 2. Handle Game Controls
-        // Commands are only executed if the game is active (not paused, not game over, not counting down)
+        // Handle Game Controls
+        // Commands are only executed if the game is active
         if (!guiController.isPaused() && !guiController.isGameOver() && !guiController.isCountingDown()) {
             Runnable action = controlMap.get(keyEvent.getCode());
             if (action != null) {

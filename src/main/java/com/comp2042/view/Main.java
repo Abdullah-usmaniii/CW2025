@@ -14,6 +14,7 @@ import java.net.URL;
 /**
  * The entry point for the Tetris application.
  * Extends the JavaFX Application class to set up the primary stage and load the initial scene.
+ * @author Abdullah Usmani
  */
 public class Main extends Application {
 
@@ -26,7 +27,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Load the Title Screen FXML first
+        // Load the Title Screen FXML
         URL location = getClass().getResource(Constants.FXML_TITLE_SCREEN);
         if (location == null) throw new RuntimeException("TitleScreen.fxml not found");
 
@@ -43,7 +44,7 @@ public class Main extends Application {
         primaryStage.setMaximized(true);
         primaryStage.show();
 
-        // Initialize background music immediately
+        // Initialize background music
         SoundManager.getInstance();
     }
 

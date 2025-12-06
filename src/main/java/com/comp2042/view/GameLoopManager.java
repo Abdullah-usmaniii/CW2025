@@ -8,6 +8,7 @@ import javafx.util.Duration;
 /**
  * Manages the game loop (gravity) using a JavaFX Timeline.
  * Responsible for triggering the periodic "move down" event.
+ * @author Abdullah Usmani
  */
 public class GameLoopManager {
 

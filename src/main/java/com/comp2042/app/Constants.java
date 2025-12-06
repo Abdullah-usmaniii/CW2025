@@ -1,5 +1,10 @@
 package com.comp2042.app;
 
+/**
+ * Defines global constant values used throughout the application.
+ * Includes settings for window dimensions, game configuration, audio paths, and resource identifiers.
+ * @author Abdullah Usmani
+ */
 public class Constants {
     // Window Settings
     public static final String WINDOW_TITLE = "TetrisJFX";

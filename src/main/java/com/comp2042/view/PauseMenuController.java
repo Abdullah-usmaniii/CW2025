@@ -15,6 +15,7 @@ import java.io.IOException;
 /**
  * Controller for the Pause Menu overlay.
  * Handles user interactions such as resuming the game, checking high scores, or returning to the main menu.
+ * @author Abdullah Usmani
  */
 public class PauseMenuController {
 
@@ -60,7 +61,6 @@ public class PauseMenuController {
             String score = gameController.getHighScoreText();
             highScoreText.setText("High Score: " + score);
 
-            // Toggle visibility
             highScoreText.setVisible(!highScoreText.isVisible());
         }
     }
@@ -80,7 +80,6 @@ public class PauseMenuController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene currentScene = stage.getScene();
 
-            // FIX: Swap root to maintain window size
             currentScene.setRoot(root);
 
         } catch (IOException e) {

@@ -1,5 +1,9 @@
 package com.comp2042.Logic;
-
+/**
+ * Interface representing the game board and its operations.
+ *
+ * @author Abdullah Usmani
+ */
 public interface Board {
 
     boolean moveBrickDown();
