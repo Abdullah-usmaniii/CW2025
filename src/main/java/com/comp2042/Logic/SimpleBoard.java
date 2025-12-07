@@ -137,7 +137,8 @@ public class SimpleBoard implements Board {
 
     /**
      * Attempts to rotate the current brick to the next shape state.
-     * Checks if the rotated shape fits within the board and doesn't collide with existing blocks.
+     * Checks if the rotated shape fits. If not, it attempts to shift the brick
+     * horizontally to find a valid position within the board boundaries.
      *
      * @return true if rotation was successful, false otherwise.
      */
@@ -145,10 +146,29 @@ public class SimpleBoard implements Board {
     public boolean rotateLeftBrick() {
         int[][] currentMatrix = MatrixOperations.copy(currentGameMatrix);
         NextShapeInfo nextShape = brickRotator.getNextShape();
-        boolean conflict = MatrixOperations.intersect(currentMatrix, nextShape.getShape(), (int) currentOffset.getX(), (int) currentOffset.getY());
-        if (conflict) return false;
-        brickRotator.setCurrentShape(nextShape.getPosition());
-        return true;
+        int[][] shapeData = nextShape.getShape();
+        int currentX = (int) currentOffset.getX();
+        int currentY = (int) currentOffset.getY();
+        // Define a sequence of horizontal offsets (kicks) to try.
+        // kicks allow the brick to shift left/right to fit after rotation.
+        int[] kicks = {0, 1, -1, 2, -2};
+
+        for (int kick : kicks) {
+            // Calculate the test X position
+            int testX = currentX + kick;
+            // Check if the rotated brick is valid at this new position
+            boolean conflict = MatrixOperations.intersect(currentMatrix, shapeData, testX, currentY);
+            if (!conflict) {
+                // Valid position found! Apply the shift and the rotation.
+                if (kick != 0) {
+                    currentOffset.translate(kick, 0);
+                }
+                brickRotator.setCurrentShape(nextShape.getPosition());
+                return true;
+            }
+        }
+        // If no valid position is found after trying all kicks, rotation is truly blocked.
+        return false;
     }
 
     /**

@@ -206,7 +206,7 @@ public class GuiController implements Initializable {
     public void setEventListener(InputEventListener eventListener) {
         this.eventListener = eventListener;
 
-        this.inputHandler = new GameInputHandler(gamePanel, this);
+        this.inputHandler = new GameInputHandler(rootPane, this);
         this.loopManager = new GameLoopManager(() ->
                 moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
         );
